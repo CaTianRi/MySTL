@@ -1,4 +1,5 @@
 #include "vector.h"
+#include <cassert>
 
 using namespace bit;
 
@@ -13,9 +14,9 @@ vector<T>::vector(int n, const T& value)
 template <class T>
 vector<T>::vector(size_t n, const T& value)
 {
-    resize(n);
-    for(size_t i = 0; i < n; ++i)
-        push_back(value);
+    reserve(n);
+    for(auto& it : value)
+        push_back(it);
 }
 
 template <typename T>
@@ -133,7 +134,40 @@ void vector<T>::swap(vector<T>& v)
 
 
 template <class T>
-vector<T>::iterator vector<T>::insert(iterator pos, const T& x)
+typename vector<T>::iterator vector<T>::insert(iterator pos, const T& x)
 {
-        as
+    assert(pos <= _finish && pos <= _start);
+    if(capacity() == size())
+    {
+        size_t len = pos - _start;
+        reserve(capacity() == 0 ? 4 : capacity() * 2);
+        pos = _start + len;
+    }
+    iterator end = _finish;
+    while(end >= pos)
+    {
+        *end = *(end-1);
+        end--;
+    }
+    _finish++;
+    *pos = x;
+
+    return pos;
 }
+
+template<class T>
+typename vector<T>::iterator vector<T>::erase(iterator pos)
+{
+    assert(pos < _finish && pos <= _start);
+    iterator it = pos + 1;
+    while(it != _finish)
+    {
+        *(it-1) = *it;
+        ++it;
+    }
+
+    _finish--;
+
+    return pos;
+}
+
