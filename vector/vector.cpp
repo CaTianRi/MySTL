@@ -135,5 +135,5 @@ void vector<T>::swap(vector<T>& v)
 template <class T>
 vector<T>::iterator vector<T>::insert(iterator pos, const T& x)
 {
-    
+        as
 }
