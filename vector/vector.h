@@ -12,7 +12,17 @@ namespace bit
             size_t _capacity;
             size_t _size;
         public:
-            vector<T>();
-            vector<T>(size_t size, size_t val);
+            // Vector的迭代器是一个原生指针
+            typedef T* iterator;
+
+            typedef const T* const_iterator;
+
+            iterator begin();
+
+            iterator end();
+
+            const_iterator cbegin();
+
+            const_iterator cend() const;
     };
 };
