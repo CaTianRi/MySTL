@@ -45,6 +45,15 @@ vector<T>& vector<T>::operator= (vector<T> v)
     return *this;
 }
 
+template <class T>
+vector<T>::~vector()
+{
+    delete [] _start;
+    _start = nullptr;
+    _finish = nullptr;
+    _endOfStorage = nullptr;
+}
+
 template <class T> 
 void vector<T>::reserve(size_t n)
 {
@@ -69,10 +78,62 @@ void vector<T>::reserve(size_t n)
 template <class T>
 void vector<T>::resize(size_t n, const T& value)
 {
-    if(n > size())
-        reserve(n);
-    for (int i = 0; i < n; ++i)
+    if(n <= size())
+        _finish = _start + n;
+    else 
     {
-        _start[i] = value;
+        reserve(n);
+        while(_finish < _start + n)
+        {
+            *_finish = value;
+            ++_finish;
+        }
     }
+}
+
+template <class T>
+T& vector<T>::operator[](size_t pos)
+{
+    assert(pos <= size());
+
+    return _start[pos];
+}
+
+template <class T>
+const T& vector<T>::operator[](size_t pos)const
+{
+    return _start[pos];
+}
+
+template <class T>
+void vector<T>::push_back(const T& x)
+{
+    if(_finish == _endOfStorage)
+        reserve(capacity() == 0 ? 4 : capacity() * 2);
+
+    *_finish = x;
+    ++_finish;
+}
+
+template <class T>
+void vector<T>::pop_back()
+{
+    assert(_finish != _start);
+
+    --_finish;
+}
+
+template <class T>
+void vector<T>::swap(vector<T>& v)
+{
+    std::swap(_start, v._start);
+    std::swap(_endOfStorage, v._endOfStorage);
+    std::swap(_finish, v._finish);
+}
+
+
+template <class T>
+vector<T>::iterator vector<T>::insert(iterator pos, const T& x)
+{
+    
 }
