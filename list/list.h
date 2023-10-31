@@ -19,7 +19,7 @@ namespace bit
     template <class T>
     struct _list_iterator
     {
-        list_node<T> _node;
+        list_node<T>* _node;
         
     };
 

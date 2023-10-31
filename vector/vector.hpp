@@ -201,7 +201,7 @@ namespace bit
         std::swap(_finish, v._finish);
     }
     
-    
+    //vector<T>还未实例化，在函数前加一个typename就是告诉编译器，这是一个类型，等它实例化再去类里面取
     template <class T>
     typename vector<T>::iterator vector<T>::insert(iterator pos, const T& x)
     {
