@@ -1,5 +1,5 @@
 #include <iostream>
-#include <optional>
+#include <cassert>
 
 namespace bit 
 {
@@ -40,7 +40,7 @@ namespace bit
         self& operator++() 
         {
             _node = _node->_next;
-            return _node;
+            return *this;
         };
 
         self operator++(int)
@@ -197,6 +197,35 @@ namespace bit
     template <class T>
     typename list<T>::iterator list<T>::insert(iterator pos, const T& val)
     {
-        Node* next = 
+        Node* cur = pos._node, * perv = cur->_perv;
+        Node* node = new Node(val);
+        perv->_next = node;
+        node->_perv = perv;
+        node->_next = cur;
+        cur->_perv = node;
+    }
+
+    template <class T>
+    typename  list<T>::iterator list<T>::erase(iterator pos)
+    {
+        Node* cur = pos._node;
+        Node* perv = cur->_perv;
+        cur->_next->_perv = perv;
+        perv->_next = cur->_next;
+
+        delete cur;
+    }
+    
+    template <class T>
+    void list<T>::clear()
+    {
+        while(size())
+            pop_back();
+    }
+
+    template <class T>
+    void list<T>::swap(list<T>& l)
+    {
+        std::swap(_node, l._node);
     }
 }
