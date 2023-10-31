@@ -1,5 +1,4 @@
 #include "vector.h"
-#include <cassert>
 
 using namespace bit;
 
@@ -9,6 +8,13 @@ vector<T>::vector(int n, const T& value)
     resize(n);
     for(size_t i = 0; i < n; ++i)
         push_back(value);
+}
+template <class T>
+vector<T>::vector()
+    :_start(nullptr)
+    ,_finish(nullptr)
+    ,_endOfStorage(nullptr)
+{
 }
 
 template <class T>
