@@ -278,7 +278,9 @@ size_t string::find (const char* s, size_t pos) const
 
 string& string::insert(size_t pos, char c)
 {
-    if(_size == _capacity)
+    assert(pos <= _size);
+
+    if(_size >= _capacity)
         reserve(_capacity * 2);
     int end = _size + 1;
     while(end > pos)
@@ -325,7 +327,7 @@ string& string::erase(size_t pos, size_t len)
     }
     else 
     {
-        int begin = pos + len;
+        size_t begin = pos + len;
         while (begin <= _size)
         {
             _str[begin -len] = _str[begin++];
