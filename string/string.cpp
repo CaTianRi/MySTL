@@ -79,7 +79,7 @@ void string::reserve(size_t n)
         return;
 
     _capacity = n;
-    char * s = new char[n];
+    char * s = new char[n+1];
     strcpy(s, _str);
     delete [] _str;
     _str = s;
