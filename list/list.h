@@ -1,4 +1,5 @@
 #include <iostream>
+#include <optional>
 
 namespace bit 
 {
@@ -26,6 +27,7 @@ namespace bit
         typedef list_node<T> Node;
         typedef ListIterator<T, Ref, Ptr> self;
     public:
+        Node* _node;
         ListIterator(Node* node = nullptr)
             :_node(node) 
         {}
@@ -33,7 +35,7 @@ namespace bit
         ListIterator(const self& l) :_node(l._node) {} 
 
         T& operator*() { return _node->_data; };
-        T* operator->() { return _node->_next; };
+        T* operator->() { return &_node->_data; };
 
         self& operator++() 
         {
@@ -72,9 +74,6 @@ namespace bit
         {
             return _node == l._node;
         }
-
-    private:
-        Node* _node;
     };
 
     template <class T>
@@ -89,7 +88,7 @@ namespace bit
         list() { init(); };
         list(int n, const T& value = T());
         list(const list<T>& l);
-        list<T>& operator=(const list<T>& l); // or const list<T> l
+        list<T>& operator=(const list<T> l); // or const list<T> 
         ~list();
         
         //list iterator
@@ -139,6 +138,32 @@ namespace bit
     }
 
     template <class T>
+    list<T>::list(const list<T>& l)
+    {
+        for(auto it : l)
+            push_back(it);
+    }
+
+    template <class T>
+    list<T>& list<T>::operator=(const list<T> l)
+    {
+        swap(l);
+        
+        return *this;
+    }
+
+    template <class T>
+    list<T>::~list()
+    {
+        while(size())
+        {
+            pop_back();
+        }
+        delete _node;
+        _node = nullptr;
+    }
+
+    template <class T>
     void list<T>::push_back(const T& val)
     {
         Node* cur = new Node(val);
@@ -150,8 +175,28 @@ namespace bit
     template <class T>
     void list<T>::pop_back()
     {
+        assert(size() > 0);
+
+        Node* pev = _node->_perv->_perv;
         delete _node->_perv;
+        _node->_perv = pev;
+        pev->_next = _node;
     }
+    
+    template <class T>
+    void list<T>::pop_front()
+    {
+        assert(size() > 0);
 
-
+        Node* tem = _node->_next->_next;
+        delete _node->_next;
+        tem->_perv = _node;
+        _node->_next = tem;
+    }
+    
+    template <class T>
+    typename list<T>::iterator list<T>::insert(iterator pos, const T& val)
+    {
+        Node* next = 
+    }
 }
