@@ -52,9 +52,80 @@ void test_2()
     cout << endl << endl;
 }
 
+void test_vector3()
+{
+    using namespace bit;
+    vector<int> v;
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
+	v.push_back(4);
+	v.push_back(5);
+	v.push_back(6);
+	v.push_back(7);
+
+	for (auto e : v)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+	vector<int>::iterator it = v.begin() + 2;
+	v.insert(it, 30);
+	for (auto e : v)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+	//v.insert(v.begin(), 30);
+	v.insert(v.begin()+3, 30);
+	for (auto e : v)
+	{
+		cout << e << " ";
+	}
+	cout << endl << endl;
+}
+
+void test_vector4()
+{
+    bit::vector<int> v;
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
+	v.push_back(4);
+	v.push_back(5);
+	v.push_back(6);
+	v.push_back(7);
+
+	for (auto e : v)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+	auto pos = v.begin();
+	v.erase(pos);
+
+	for (auto e : v)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+	v.erase(v.begin()+3);
+	for (auto e : v)
+	{
+		cout << e << " ";
+	}
+	cout << endl << endl;
+}
+
 int main()
 {
     test_1();
     test_2();
+    test_vector3();
+    test_vector4();
     return 0;
 }

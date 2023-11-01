@@ -25,7 +25,7 @@ namespace bit
 
         vector(int n, const T& value = T());
 
-        vector(size_t n, const T& value = T());
+        vector(size_t n, const T& value = T()); //重载size_t，避免使用到迭代器版本
 
         template<class InputIterator>
         vector(InputIterator first, InputIterator last);
@@ -206,38 +206,38 @@ namespace bit
     template <class T>
     typename vector<T>::iterator vector<T>::insert(iterator pos, const T& x)
     {
-        assert(pos <= _finish && pos <= _start);
-        if(capacity() == size())
+        assert(pos <= _finish && pos >= _start);
+        if(_finish == _endOfStorage)
         {
             size_t len = pos - _start;
             reserve(capacity() == 0 ? 4 : capacity() * 2);
             pos = _start + len;
         }
         iterator end = _finish;
-        while(end >= pos)
+        while(end > pos)
         {
             *end = *(end-1);
             end--;
         }
-        _finish++;
+
         *pos = x;
-    
+        _finish++;
+
         return pos;
     }
     
     template<class T>
     typename vector<T>::iterator vector<T>::erase(iterator pos)
     {
-        assert(pos < _finish && pos <= _start);
+        assert(pos < _finish && pos >= _start);
         iterator it = pos + 1;
         while(it != _finish)
         {
             *(it-1) = *it;
             ++it;
         }
-    
         _finish--;
-    
+
         return pos;
     }
 };
