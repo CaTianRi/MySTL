@@ -12,7 +12,11 @@ void test_list1()
 	lt.push_back(3);
 	lt.push_back(4);
 	lt.push_back(5);
-
+    for(auto it : lt)
+    {
+        cout << it << " ";
+    }
+    cout << endl;
 	// 封装屏蔽底层差异和实现细节
 	// 提供统一的访问修改遍历方式12
 	list<int>::iterator it = lt.begin();

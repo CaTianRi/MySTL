@@ -89,7 +89,7 @@ namespace bit
         list(int n, const T& value = T());
         list(const list<T>& l);
         list<T>& operator=(const list<T> l); // or const list<T> 
-        ~list();
+        ~list() ;
         
         //list iterator
         iterator begin() { return _node->_next; }
@@ -170,7 +170,7 @@ namespace bit
       //  cur->_next = _node;
       //  cur->_perv = _node->_perv;
       //  _node->_perv->_next = cur;
-        insert(begin(), val);
+        insert(end(), val);
     }
 
     template <class T>
@@ -215,7 +215,7 @@ namespace bit
         Node* perv = cur->_perv;
         cur->_next->_perv = perv;
         perv->_next = cur->_next;
-
+ 
         delete cur;
         return perv->_next;
     }
