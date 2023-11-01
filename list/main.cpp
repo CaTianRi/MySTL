@@ -33,7 +33,7 @@ void test_list1()
 	{
 		cout << e << " ";
 	}
-	cout << endl;
+	cout << endl << endl;
 
 	/*set<int> s;
 	s.insert(1);
@@ -50,8 +50,93 @@ void test_list1()
 	cout << endl;*/
 }
 
+void test_list2()
+{
+    bit::list<int> lt;
+	lt.push_back(1);
+	lt.push_back(2);
+	lt.push_back(3);
+	lt.push_back(4);
+	lt.push_back(5);
+
+    bit::list<int> lt1(lt);
+
+	for (auto e : lt)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+	for (auto e : lt1)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+    bit::list<int> lt2;
+	lt2.push_back(10);
+	lt2.push_back(200);
+	lt2.push_back(30);
+	lt2.push_back(40);
+	lt2.push_back(50);
+
+	lt1 = lt2;
+	for (auto e : lt1)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+
+	for (auto e : lt2)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+}
+
+struct AA
+{
+	AA(int a1 = 0, int a2 = 0)
+		:_a1(a1)
+		,_a2(a2)
+	{}
+
+	int _a1;
+	int _a2;
+};
+
+void test_list3()
+{
+    bit::list<AA> lt;
+	lt.push_back(AA(1, 1));
+	lt.push_back(AA(2, 2));
+	lt.push_back(AA(3, 3));
+
+    bit::list<AA>::iterator it = lt.begin();
+	while (it != lt.end())
+	{
+		//cout << (*it)._a1<<" "<<(*it)._a2 << endl;
+		cout << it->_a1 << " " << it->_a2 << endl;
+		cout << it.operator->()->_a1 << " " << it.operator->()->_a1 << endl;
+
+
+		++it;
+	}
+	cout << endl;
+
+	int* p = new int;
+	*p = 1;
+
+	AA* ptr = new AA;
+	ptr->_a1 = 1;
+
+}
+
+
 int main()
 {
     test_list1();
+    test_list2();
+    test_list3();
     return 0;
 }

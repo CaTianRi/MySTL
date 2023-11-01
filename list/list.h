@@ -82,13 +82,13 @@ namespace bit
     public:
         typedef list_node<T> Node;
         typedef ListIterator<T, T&, T*> iterator;
-        typedef ListIterator<const T, const T&, const T*> const_iterator;
+        typedef ListIterator<T, const T&, const T*> const_iterator;
 
         // list();
         list() { init(); };
         list(int n, const T& value = T());
         list(const list<T>& l);
-        list<T>& operator=(const list<T> l); // or const list<T> 
+        list<T>& operator=(list<T> l); // or const list<T> 
         ~list() ;
         
         //list iterator
@@ -131,6 +131,7 @@ namespace bit
     template <class T>
     list<T>::list(int n, const T& value)
     {
+        init();
         for(int i = 0; i < n; ++i)
         {
             push_back(value);
@@ -140,15 +141,15 @@ namespace bit
     template <class T>
     list<T>::list(const list<T>& l)
     {
+        init();
         for(auto it : l)
             push_back(it);
     }
 
     template <class T>
-    list<T>& list<T>::operator=(const list<T> l)
+    list<T>& list<T>::operator=(list<T> l)
     {
         swap(l);
-        
         return *this;
     }
 
@@ -232,4 +233,5 @@ namespace bit
     {
         std::swap(_node, l._node);
     }
+
 }
