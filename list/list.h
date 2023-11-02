@@ -19,6 +19,18 @@ namespace bit
     struct Reverse_iterator 
     {
         Iterator _it;
+        Reverse_iterator(Iterator it) :_it(it.end()--) {}
+        typedef Reverse_iterator<Iterator, Ref, Ptr> self;
+        Ref operator*()
+        {
+            return *_it;
+        }
+        
+        Ptr operator->()
+        {
+            return _it.operator->();
+        }
+
     };
 
     template <class T, class Ref, class Ptr>
