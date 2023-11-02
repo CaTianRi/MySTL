@@ -132,11 +132,45 @@ void test_list3()
 
 }
 
+void test_reverse()
+{
+    bit::list<int> lt;
+    lt.push_back(1);
+    lt.push_back(2);
+    lt.push_back(3);
+    lt.push_back(4);
+    lt.push_back(5);
+    
+    bit::list<int>::reverse_iterator it = lt.rbegin();
+
+    while(it != lt.rend())
+    {
+        cout << *it << " ";
+		++it;
+    }
+    cout << endl;
+
+	bit::list<AA> lt2;
+	lt2.push_back(AA(1, 1));
+	lt2.push_back(AA(2, 2));
+	lt2.push_back(AA(3, 3));
+	bit::list<AA>::reverse_iterator it2 = lt2.rbegin();
+	while (it2 != lt2.rend())
+	{
+		//cout << (*it)._a1<<" "<<(*it)._a2 << endl;
+		cout << it2->_a1 << " " << it2->_a2 << endl;
+		cout << it2.operator->()->_a1 << " " << it2.operator->()->_a1 << endl;
+
+		++it2;
+	}
+	cout << endl;
+}
 
 int main()
 {
     test_list1();
     test_list2();
     test_list3();
+	test_reverse();
     return 0;
 }

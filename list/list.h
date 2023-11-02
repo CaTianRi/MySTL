@@ -19,7 +19,7 @@ namespace bit
     struct Reverse_iterator 
     {
         Iterator _it;
-        Reverse_iterator(Iterator it) :_it(it.end()--) {}
+        Reverse_iterator(Iterator it) :_it(it) {}
         typedef Reverse_iterator<Iterator, Ref, Ptr> self;
         Ref operator*()
         {
@@ -33,7 +33,7 @@ namespace bit
 
         self& operator++()
         {
-            ++_it;
+            --_it;
 
             return *this;
         }
@@ -41,14 +41,14 @@ namespace bit
         self operator++(int)
         {
             self tem(*this);
-            ++_it;
+            --_it;
 
             return tem;
         }
 
         self& operator--()
         {
-            --_it;
+            ++_it;
             
             return *this;
         }
@@ -56,7 +56,7 @@ namespace bit
         self operator--(int)
         {
             self tem(*this);
-            --_it;
+            ++_it;
 
             return tem;
         }
@@ -106,14 +106,15 @@ namespace bit
         {
             _node = _node->_perv;
 
-            return _node;
+            return *this;
         }
 
         self& operator--(int)
         {
             self tem(_node);
             _node = _node->prev;
-            return tem;
+
+            return *this;
         }
 
         bool operator!=(const self& l)
@@ -134,6 +135,8 @@ namespace bit
         typedef list_node<T> Node;
         typedef ListIterator<T, T&, T*> iterator;
         typedef ListIterator<T, const T&, const T*> const_iterator;
+        typedef Reverse_iterator<iterator, T&, T*> reverse_iterator;
+        typedef Reverse_iterator<const_iterator, const T&, const T*> const_reverse_iterator;
 
         // list();
         list() { init(); };
@@ -147,6 +150,13 @@ namespace bit
         iterator end() { return _node; }
         const_iterator begin() const { return _node->_next; }
         const_iterator end() const { return _node; }
+
+        // reverse_iterator
+        reverse_iterator rbegin() { return reverse_iterator(_node->_perv); }
+        reverse_iterator rend() { return reverse_iterator(_node); }
+        const_reverse_iterator  rbegin() const { return reverse_iterator(_node->_perv); }
+        reverse_iterator rend() const { return reverse_iterator(_node); }
+
         
         //list capacity
         size_t size() const { return _node->_perv - _node; }
