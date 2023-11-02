@@ -31,6 +31,45 @@ namespace bit
             return _it.operator->();
         }
 
+        self& operator++()
+        {
+            ++_it;
+
+            return *this;
+        }
+
+        self operator++(int)
+        {
+            self tem(*this);
+            ++_it;
+
+            return tem;
+        }
+
+        self& operator--()
+        {
+            --_it;
+            
+            return *this;
+        }
+
+        self operator--(int)
+        {
+            self tem(*this);
+            --_it;
+
+            return tem;
+        }
+
+        bool operator!=(const self& l)
+        {
+            return _it != l._it;
+        }
+
+        bool operator==(const self& l)
+        {
+            return _it == l._it;
+        }
     };
 
     template <class T, class Ref, class Ptr>
