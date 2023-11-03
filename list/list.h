@@ -85,8 +85,8 @@ namespace bit
 
         ListIterator(const self& l) :_node(l._node) {} 
 
-        T& operator*() { return _node->_data; };
-        T* operator->() { return &_node->_data; };
+        Ref operator*() { return _node->_data; };
+        Ptr operator->() { return &_node->_data; };
 
         self& operator++() 
         {
@@ -294,5 +294,4 @@ namespace bit
     {
         std::swap(_node, l._node);
     }
-
 }
