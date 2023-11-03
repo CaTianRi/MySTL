@@ -166,11 +166,24 @@ void test_reverse()
 	cout << endl;
 }
 
+class A 
+{
+public:
+    void print() {cout << _aa << ' ' << _a2<< " ";}
+    int _b;
+    A(){};
+
+private:
+    int _aa = 1;
+    int _a2 = 2;
+};
+
 int main()
 {
     test_list1();
     test_list2();
     test_list3();
 	test_reverse();
+
     return 0;
 }

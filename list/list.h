@@ -155,7 +155,7 @@ namespace bit
         reverse_iterator rbegin() { return reverse_iterator(_node->_perv); }
         reverse_iterator rend() { return reverse_iterator(_node); }
         const_reverse_iterator  rbegin() const { return reverse_iterator(_node->_perv); }
-        reverse_iterator rend() const { return reverse_iterator(_node); }
+        const_reverse_iterator rend() const { return reverse_iterator(_node); }
 
         
         //list capacity
