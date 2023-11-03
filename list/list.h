@@ -228,11 +228,12 @@ namespace bit
     template <class T>
     void list<T>::push_back(const T& val)
     {
-      //  Node* cur = new Node(val);
-      //  cur->_next = _node;
-      //  cur->_perv = _node->_perv;
-      //  _node->_perv->_next = cur;
-        insert(end(), val);
+        Node* cur = new Node(val);
+        cur->_next = _node;
+        cur->_perv = _node->_perv;
+        _node->_perv->_next = cur;
+        _node->_perv = cur;
+      //  insert(end(), val);
     }
 
     template <class T>
