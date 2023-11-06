@@ -40,14 +40,12 @@ namespace bit
     void pop()
     {
         c.pop();
-        adjust(size()-1);
+        adjust_down(size()-1);
     }
   private:
-    void adjust(size_t child)
-    {
-
-    }
-
+    void adjust_down(size_t child);
+    void adjust_up(size_t child);
+    
 
     Container c;
     Compare comp;
