@@ -12,19 +12,43 @@ namespace bit
     priority_queue();
 
     template <class InputIterator>
+    priority_queue(InputIterator first, InputIterator last)
+    {
 
-    priority_queue(InputIterator first, InputIterator last);
+    }
 
-    bool empty() const;
+    bool empty() const
+    {
+        return c.empty();
+    }
 
-    size_t size() const;
+    size_t size() const
+    {
+        return c.size();
+    }
 
-    T& top() const;
+    T& top() const 
+    {
+        return c.front();
+    }
 
-    void push(const T& x);
+    void push(const T& x)
+    {
+        
+    }
 
-    void pop();
+    void pop()
+    {
+        c.pop();
+        adjust(size()-1);
+    }
   private:
+    void adjust(size_t child)
+    {
+
+    }
+
+
     Container c;
     Compare comp;
   };
