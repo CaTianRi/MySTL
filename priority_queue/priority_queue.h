@@ -62,7 +62,21 @@ namespace bit
             }
         }
 
-        void adjust_up(size_t child);
+        void adjust_up(size_t child)
+        {
+            size_t parent = (child - 1) / 2;
+            while(child > 0)
+            {
+                if(comp(c[child], c[parent]))
+                {
+                    swap(c[child], c[parent]);
+                    child = parent;
+                    parent = (child - 1) / 2;
+                }
+                else 
+                    break;
+            }
+        }
         
 
         Container c;
