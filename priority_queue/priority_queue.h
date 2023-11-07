@@ -61,7 +61,7 @@ namespace bit
                 if(child + 1 < size() && comp(c[child], c[child+1]))
                     child++;
                 
-                if(comp(c[child], c[parent]))
+                if(comp(c[parent], c[child]))
                 {
                     std::swap(c[child], c[parent]);
                     parent = child;
@@ -77,7 +77,7 @@ namespace bit
             int parent = (child - 1) / 2;
             while(child > 0)
             {
-                if(comp(c[child], c[parent]))
+                if(comp(c[parent], c[child]))
                 {
                     std::swap(c[child], c[parent]);
                     child = parent;
