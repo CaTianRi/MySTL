@@ -1,5 +1,4 @@
 #include <vector>
-#include<vector>
 #include <functional>
 
 namespace bit
@@ -9,12 +8,16 @@ namespace bit
     class priority_queue
     {
     public:
-        priority_queue();
+        priority_queue() {}
 
         template <class InputIterator>
         priority_queue(InputIterator first, InputIterator last)
+        :c(first, last)
         {
-
+            for(int i = (size()-2) / 2; i >= 0; --i)
+            {
+                adjust_down(i);
+            }
         }
 
         bool empty() const
@@ -27,25 +30,32 @@ namespace bit
             return c.size();
         }
 
-        T& top() const 
+        const T& top() const 
         {
-            return c.front();
+            return c[0];
+        }
+
+        T& top()
+        {
+            return c[0];
         }
 
         void push(const T& x)
         {
-            
+            c.push_back(x);
+            adjust_up(size()-1);
         }
 
         void pop()
         {
-            c.pop();
-            adjust_down(size()-1);
+            std::swap(c[0], c[size()-1]);
+            c.pop_back();
+            adjust_down(0);
         }
     private:
-        void adjust_down(size_t parent)
+        void adjust_down(int parent)
         {
-            size_t child = parent * 2 + 1;
+            int child = parent * 2 + 1;
             while(child < size())
             {
                 if(child + 1 < size() && comp(c[child], c[child+1]))
@@ -62,14 +72,14 @@ namespace bit
             }
         }
 
-        void adjust_up(size_t child)
+        void adjust_up(int child)
         {
-            size_t parent = (child - 1) / 2;
+            int parent = (child - 1) / 2;
             while(child > 0)
             {
                 if(comp(c[child], c[parent]))
                 {
-                    swap(c[child], c[parent]);
+                    std::swap(c[child], c[parent]);
                     child = parent;
                     parent = (child - 1) / 2;
                 }
