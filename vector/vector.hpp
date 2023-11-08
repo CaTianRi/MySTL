@@ -18,13 +18,13 @@ namespace bit
 
         typedef Reverse_iterator<const_iterator, const T&, const T*> const_reverse_iterator;
             
-        // reverse_iterator rbegin() { return end(); }  
+        reverse_iterator rbegin() { return end() - 1; }  
 
-        reverse_iterator rend() { return --begin(); }
+        reverse_iterator rend() { return begin() - 1; }
 
-        const_reverse_iterator rbegin() const { return --end(); }
+        const_reverse_iterator rbegin() const { return end() - 1; }
 
-        const_reverse_iterator rend() const { return --begin(); }
+        const_reverse_iterator rend() const { return begin() - 1; }
 
         iterator begin() { return _start; }
 

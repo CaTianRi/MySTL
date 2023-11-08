@@ -14,7 +14,8 @@ namespace bit
             ,_next(nullptr)
             ,_perv(nullptr) {}
     };
-    
+
+    //反向迭代器
     template <class Iterator, class Ref, class Ptr>
     struct Reverse_iterator 
     {
@@ -23,6 +24,8 @@ namespace bit
         typedef Reverse_iterator<Iterator, Ref, Ptr> self;
         Ref operator*()
         {
+            // self tem(*this);
+            // return *++tem;
             return *_it;
         }
         

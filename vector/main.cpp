@@ -136,6 +136,7 @@ void test_5()
     while(it != v.rend())
     {
         cout << *it << " ";
+        ++it;
     }
     cout << endl;
 }
@@ -146,5 +147,6 @@ int main()
     test_2();
     test_vector3();
     test_vector4();
+    test_5();
     return 0;
 }
