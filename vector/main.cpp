@@ -121,6 +121,25 @@ void test_vector4()
 	cout << endl << endl;
 }
 
+void test_5()
+{
+    bit::vector<int> v;
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
+	v.push_back(4);
+	v.push_back(5);
+	v.push_back(6);
+	v.push_back(7);
+
+    bit::vector<int>::reverse_iterator it = v.rbegin();
+    while(it != v.rend())
+    {
+        cout << *it << " ";
+    }
+    cout << endl;
+}
+
 int main()
 {
     test_1();

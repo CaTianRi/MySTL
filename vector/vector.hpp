@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "../list/list.h"
 #include <cassert>
 
 namespace bit 
@@ -12,6 +13,18 @@ namespace bit
         typedef T* iterator;
 
         typedef const T* const_iterator;
+
+        typedef Reverse_iterator<iterator, T&, T*> reverse_iterator;
+
+        typedef Reverse_iterator<const_iterator, const T&, const T*> const_reverse_iterator;
+            
+        // reverse_iterator rbegin() { return end(); }  
+
+        reverse_iterator rend() { return --begin(); }
+
+        const_reverse_iterator rbegin() const { return --end(); }
+
+        const_reverse_iterator rend() const { return --begin(); }
 
         iterator begin() { return _start; }
 
