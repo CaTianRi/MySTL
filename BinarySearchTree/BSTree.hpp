@@ -64,11 +64,22 @@ bool BSTree<K, V>::Erase(const K& key)
             parent = subRight;
             subRight = subRight->_right;
         }
-        
+
+        swap(cur->_key, subRight->_key);
+        swap(cur->_value, subRight->_value);
+
+        if(parent == cur)
+        {
+            delete subRight;
+        }
+        else if(subRight->_left)
+        {
+            parent->_right = subRight->_left;
+        }
     }
     else if(cur->_right || cur->_left)
     {
-
+        
     }
     else 
     {
