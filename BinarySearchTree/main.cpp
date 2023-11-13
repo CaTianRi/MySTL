@@ -1,4 +1,5 @@
 #include "BSTree.h"
+#include <string>
 
 using namespace std; 
 
@@ -44,6 +45,5 @@ void TestBSTree()
 
 int main()
 {
-
     return 0;
 }
