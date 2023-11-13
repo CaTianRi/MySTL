@@ -1,4 +1,4 @@
-#include "BSTree.h"
+#include "BSTree.hpp"
 #include <string>
 
 using namespace std; 
