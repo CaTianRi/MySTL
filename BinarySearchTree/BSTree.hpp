@@ -79,11 +79,32 @@ bool BSTree<K, V>::Erase(const K& key)
     }
     else if(cur->_right || cur->_left)
     {
-        
-    }
-    else 
-    {
-        delete cur;
+        if(cur == _root)
+        {
+            _root = _root->_left ? _root->_left : _root->_right;
+        }
+        else if(cur->_left)
+        {
+            if(prev->_left == cur)
+            {
+                prev->_left = cur->_left;
+            }
+            else 
+            {
+                prev->_right = cur->_left;
+            }
+        }
+        else 
+        {
+            if(prev->_right == cur)
+            {
+                prev->_right = cur->_right;
+            }
+            else 
+            {
+                prev->_left = cur->_right;
+            }
+        }
     }
 
     return true;
