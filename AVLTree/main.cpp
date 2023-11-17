@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-	const int N = 30;
+	const int N = 20;
 	vector<int> v;
 	v.reserve(N);
 	//srand(time(0));

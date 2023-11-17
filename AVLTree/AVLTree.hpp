@@ -91,15 +91,16 @@ void AVLTree<K, V>::RotateL(Node* parent)
     Node* subRL = subR->_left;
     Node* parentParent = parent->_parent;
 
-    parent->_right = subR->_left;
-    subR->_left = parent;
-    subR->_parent = parent->_parent;
+    parent->_right = subRL;
     parent->_parent = subR;
+    subR->_left = parent;
     if(subRL)
         subRL->_parent = parent;
+
     if(_root == parent)
     {
         _root = subR;
+        subR->_parent = nullptr;
     }
     else 
     {
@@ -111,6 +112,8 @@ void AVLTree<K, V>::RotateL(Node* parent)
         {
             parentParent->_right = subR;
         }
+
+		subR->_parent = parentParent;
     }
     parent->_bf = subR->_bf = 0;
 }
@@ -122,10 +125,11 @@ void AVLTree<K, V>::RotateR(Node* parent)
     Node* subLR = subL->_right;
     Node* parentParent = parent->_parent;
 
-    subL->_left = parent;
+    subL->_right = parent;
+
     parent->_left = subLR;
-    subL->_parent = parentParent;
     parent->_parent = subL;
+
     if(subLR)
         subLR->_parent = parent;
 
@@ -167,8 +171,8 @@ void AVLTree<K, V>::RotateRL(Node* parent)
     else if(bf == -1)
     {
         subRL->_bf = 0;
-        subR->_bf = 0;
-        parent->_bf = 1;
+        subR->_bf = 1;
+        parent->_bf = 0;
     }
     else 
     {
@@ -193,20 +197,18 @@ void AVLTree<K, V>::RotateLR(Node* parent)
     }
     else if(bf == -1)
     {
-        parent->_bf = -1;
+        parent->_bf = 1;
         subL->_bf = 0;
         subLR->_bf = 0;
     }
     else if(bf == 1)
     {
+        subL->_bf = -1;
         parent->_bf = 0;
-        subL->_bf = 0;
-        subLR->_bf = 1;
+        subLR->_bf = 0;
     }
     else 
-    {
         assert(false);
-    }
 }
 
 template <class K, class V>
