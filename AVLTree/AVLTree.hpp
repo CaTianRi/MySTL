@@ -62,9 +62,91 @@ void AVLTree<K, V>::RotateR(Node* parent)
 {
     Node* subL = parent->_left;
     Node* subLR = subL->_right;
+    Node* parentParent = parent->_parent;
 
+    subL->_left = parent;
+    parent->_left = subL;
+    subL->_parent = parentParent;
+    parent->_parent = subL;
+    if(parent == _root)
+        _root = subL;
+    else
+    {
+        if(parent == parentParent->_left)
+            parentParent->_left = subL;
+        else
+            parentParent->_right = subL;
+
+        subL->_parent = parentParent;
+    }
+
+    subL->_bf = parent->_bf = 0;
 } 
 
+template <class K, class V>
+void AVLTree<K, V>::RotateRL(Node* parent)
+{
+    Node* subR = parent->_right;
+    Node* subRL = subR->_left;
+    int bf = subRL->_bf;
+
+    RotateR(parent->_right);
+    RotateL(parent);
+
+    if(bf == 0)
+    {
+        parent->_bf = subR->_bf = subRL->_bf = 0;
+    }
+    else if(bf == 1)
+    {
+        parent->_bf = -1;
+        subR->_bf = 0;
+        subRL->_bf = 0;
+    }
+    else if(bf == -1)
+    {
+        subRL->_bf = 0;
+        subR->_bf = 0;
+        parent->_bf = 1;
+    }
+    else 
+    {
+        assert(false);
+    }
+}
+
+
+template <class K, class V>
+void AVLTree<K, V>::RotateLR(Node* parent)
+{
+    Node* subL = parent->_left;
+    Node* subLR = subL->_right;
+    int bf = subLR->_bf;
+
+    RotateL(parent->_left);
+    RotateR(parent);
+
+    if(bf == 0)
+    {
+        parent->_bf = subL->_bf = subLR->_bf = 0;
+    }
+    else if(bf == -1)
+    {
+        parent->_bf = -1;
+        subL->_bf = 0;
+        subLR->_bf = 0;
+    }
+    else if(bf == 1)
+    {
+        parent->_bf = 0;
+        subL->_bf = 0;
+        subLR->_bf = 1;
+    }
+    else 
+    {
+        assert(false);
+    }
+}
 
 template <class K, class V>
 bool AVLTree<K, V>::Insert(const std::pair<K, V> data)
@@ -128,16 +210,18 @@ bool AVLTree<K, V>::Insert(const std::pair<K, V> data)
             }
             else if(parent->_bf == -2 && cur == -1)
             {
-
+                RotateR(parent);
             }
             else if(parent->_bf == 2 && cur == -1)
             {
-
+                RotateRL(parent);
             }
             else if(parent->_bf == -2 && cur == 1)
             {
-
+                RotateLR(parent);
             }
+
+            break;
         }
         else 
             assert(false);
