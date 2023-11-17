@@ -45,5 +45,6 @@ void TestBSTree()
 
 int main()
 {
+    TestBSTree();
     return 0;
 }

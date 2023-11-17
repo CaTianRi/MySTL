@@ -33,6 +33,23 @@ private:
 };
 
 template <class K, class V>
+void BSTree<K, V>::_InOrder(Node* root)
+{
+    if(!root)   return;
+
+    _InOrder(root->_left);
+    cout << root->_key << " : " << root->_value << endl;
+    _InOrder(root->_right);
+}
+
+template <class K, class V>
+void BSTree<K, V>::InOrder()
+{
+    _InOrder(_root);
+}
+
+
+template <class K, class V>
 bool BSTree<K, V>::Erase(const K& key)
 {
     Node* cur = _root;
