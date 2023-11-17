@@ -58,6 +58,59 @@ private:
 };
 
 template <class K, class V>
+size_t AVLTree<K, V>::_Height(Node* root)
+{
+    if(!root)
+        return 0;
+
+    int leftHeight = _Height(root->_left);
+    int rightHeight = _Height(root->_right);
+
+    return leftHeight > rightHeight ? leftHeight + 1:rightHeight + 1; 
+}
+
+
+template <class K, class V>
+bool AVLTree<K, V>::_IsAVLTree(Node* root)
+{
+    if(!root)
+        return true;
+    
+}
+
+
+template <class K, class V>
+void AVLTree<K, V>::RotateL(Node* parent)
+{
+    Node* subR = parent->_right;
+    Node* subRL = subR->_left;
+    Node* parentParent = parent->_parent;
+
+    parent->_right = subR->_left;
+    subR->_left = parent;
+    subR->_parent = parent->_parent;
+    parent->_parent = subR;
+    if(subRL)
+        subRL->_parent = parent;
+    if(_root == parent)
+    {
+        _root = subR;
+    }
+    else 
+    {
+        if(parent == parentParent->_left)
+        {
+            parentParent->_left = subR;
+        }
+        else 
+        {
+            parentParent->_right = subR;
+        }
+    }
+    parent->_bf = subR->_bf = 0;
+}
+
+template <class K, class V>
 void AVLTree<K, V>::RotateR(Node* parent)
 {
     Node* subL = parent->_left;
@@ -228,33 +281,3 @@ bool AVLTree<K, V>::Insert(const std::pair<K, V> data)
     }
 }
 
-template <class K, class V>
-void AVLTree<K, V>::RotateL(Node* parent)
-{
-    Node* subR = parent->_right;
-    Node* subRL = subR->_left;
-    Node* parentParent = parent->_parent;
-
-    parent->_right = subR->_left;
-    subR->_left = parent;
-    subR->_parent = parent->_parent;
-    parent->_parent = subR;
-    if(subRL)
-        subRL->_parent = parent;
-    if(_root == parent)
-    {
-        _root = subR;
-    }
-    else 
-    {
-        if(parent == parentParent->_left)
-        {
-            parentParent->_left = subR;
-        }
-        else 
-        {
-            parentParent->_right = subR;
-        }
-    }
-    parent->_bf = subR->_bf = 0;
-}
