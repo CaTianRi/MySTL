@@ -28,7 +28,7 @@ class AVLTree
 	typedef AVLTreeNode<K, V> Node;
 public:
 	AVLTree()
-		: _pRoot(nullptr)
+		: _root(nullptr)
 	{}
 
     // 在AVL树中插入值为data的节点
@@ -37,7 +37,7 @@ public:
     // AVL树的验证
 	bool IsAVLTree()
 	{
-		return _IsAVLTree(_pRoot);
+		return _IsAVLTree(_root);
 	}
 
 private:
