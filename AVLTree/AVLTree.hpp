@@ -58,7 +58,7 @@ private:
 };
 
 template <class K, class V>
-size_t AVLTree<K, V>::_Height(Node* root)
+size_t AVLTree<K, V>::_Height(Node* root)   //左右子树最高高度的统计
 {
     if(!root)
         return 0;
@@ -75,7 +75,12 @@ bool AVLTree<K, V>::_IsAVLTree(Node* root)
 {
     if(!root)
         return true;
-    
+    int left = _Height(root->_left);
+    int right = _Height(root->_right);
+
+    return abs(left - right) < 1 
+        && _IsAVLTree(root->_left)
+        && _IsAVLTree(root->_right);
 }
 
 
@@ -257,19 +262,19 @@ bool AVLTree<K, V>::Insert(const std::pair<K, V> data)
         }
         else if(parent->_bf == 2 || parent->_bf == -2)
         {
-            if(parent->_bf == 2 && cur == 1)
+            if(parent->_bf == 2 && cur->_bf == 1)
             {
                 RotateL(parent);
             }
-            else if(parent->_bf == -2 && cur == -1)
+            else if(parent->_bf == -2 && cur->_bf == -1)
             {
                 RotateR(parent);
             }
-            else if(parent->_bf == 2 && cur == -1)
+            else if(parent->_bf == 2 && cur->_bf == -1)
             {
                 RotateRL(parent);
             }
-            else if(parent->_bf == -2 && cur == 1)
+            else if(parent->_bf == -2 && cur->_bf == 1)
             {
                 RotateLR(parent);
             }
@@ -279,5 +284,6 @@ bool AVLTree<K, V>::Insert(const std::pair<K, V> data)
         else 
             assert(false);
     }
+    return true;
 }
 
