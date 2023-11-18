@@ -123,9 +123,12 @@ void AVLTree<K, V>::RotateR(Node* parent)
     Node* parentParent = parent->_parent;
 
     subL->_left = parent;
-    parent->_left = subL;
+    parent->_left = subLR;
     subL->_parent = parentParent;
     parent->_parent = subL;
+    if(subLR)
+        subLR->_parent = parent;
+
     if(parent == _root)
         _root = subL;
     else
