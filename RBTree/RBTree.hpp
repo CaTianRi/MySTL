@@ -117,7 +117,7 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
                 else 
                 {   //双旋
                    RotateL(parent);
-                   RotateL(grandParent);
+                   RotateR(grandParent);
                    grandParent->_col = RED;
                    parent->_col = BLACK;
                 }
@@ -139,11 +139,16 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
             {
                 if(cur == parent->_right)
                 {
-
+                    RotateR(parent);
+                    parent->_col = BLACK;
+                    grandParent->_col = RED;
                 }
                 else 
                 {
-
+                   RotateL(parent);
+                   RotateR(grandParent);
+                   grandParent->_col = RED;
+                   parent->_col = BLACK;
                 }
                 break;
             }
