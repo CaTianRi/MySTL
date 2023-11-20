@@ -1,5 +1,6 @@
 #include <iostream>
 #include <new>
+#include <system_error>
 #include <utility>
 
 enum Color
@@ -17,7 +18,7 @@ struct RBTreeNode
     Color _col;
     std::pair<K, V> _kv;
 
-    RBTreeNode(const std::pair<K, V>& kv = std::pair<K,V>())
+    RBTreeNode(const std::pair<K, V>& kv)
         :_left(nullptr)
         ,_right(nullptr)
         ,_parent(nullptr)
@@ -31,12 +32,12 @@ class RBTree
 {
 	typedef RBTreeNode<K, V> Node;
 public:
-	RBTree()
-	{
-		_root = new Node;
-		_root->_left = _root;
-		_root->_right = _root;
-	}
+//	RBTree()
+//	{
+//		_root = new Node;
+//		_root->_left = _root;
+//		_root->_right = _root;
+//	}
 
     // 在红黑树中插入值为data的节点，插入成功返回true，否则返回false
     // 注意：为了简单起见，本次实现红黑树不存储重复性元素
@@ -60,10 +61,63 @@ private:
     // 右单旋
 	void RotateR(Node* pParent);
     // 为了操作树简单起见：获取根节点
-	Node*& GetRoot();
+	Node*& GetRoot() { return _root; }
 private:
-	Node* _root;
+	Node* _root = nullptr;
 };
+
+template <class K, class V>
+typename RBTree<K, V>::Node* RBTree<K, V>::LeftMost()
+{
+    if(!_root)  
+        return _root;
+
+    Node* cur = _root;
+    while(cur->_left)
+    {
+        cur = cur->_left;
+    }
+
+    return cur;
+}
+
+
+template <class K, class V>
+typename RBTree<K, V>::Node* RBTree<K, V>::Find(const std::pair<K, V>& data)
+{
+    Node* cur = _root;
+    while(cur)
+    {
+        if(cur->_kv.first < data.first)
+        {
+            cur = cur->_right;
+        }
+        else if(cur->_kv.first > data.first)
+        {
+            cur = cur->_left;
+        }
+        else 
+        {
+            return cur;
+        }
+    }
+
+    return nullptr;
+}
+
+
+template <class K, class V>
+typename RBTree<K, V>::Node* RBTree<K, V>::RightMost()
+{
+    Node* cur = _root;
+    while(cur->_right)
+    {
+        cur = cur->_right;
+    }
+
+    return cur;
+}
+
 
 template <class K, class V>
 bool RBTree<K, V>::IsValidRBTRee()
@@ -113,6 +167,13 @@ bool RBTree<K, V>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const size_t p
 template <class K, class V> 
 bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
 {
+    if(_root == nullptr)
+    {
+        _root = new Node(data);
+        _root->_col = BLACK;
+        return true;
+    }
+
     Node* cur = _root;
     Node* parent = nullptr;
     while(cur)
@@ -128,10 +189,10 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
             cur = cur->_left;
         }
         else 
-            false;
+            return false;
     }
 
-    cur = new Node;
+    cur = new Node(data);
     cur->_parent = parent;
 
     if(!parent->_left)
@@ -149,6 +210,7 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
             {
                  parent->_col = uncle->_col = BLACK;
                  grandParent->_col = RED;
+
                  cur = grandParent;
                  parent = cur->_parent;
             }
@@ -156,7 +218,7 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
             {
                 if(cur == parent->_left)
                 {   //右旋
-                    RotateR(parent);
+                    RotateR(grandParent);
                     parent->_col = BLACK;
                     grandParent->_col = RED;
                 }
@@ -165,7 +227,7 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
                    RotateL(parent);
                    RotateR(grandParent);
                    grandParent->_col = RED;
-                   parent->_col = BLACK;
+                   cur->_col = BLACK;
                 }
                 break;
             }
@@ -174,7 +236,7 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
         {
             Node* uncle = grandParent->_right;
 
-            if(uncle->_col == BLACK)
+            if(uncle && uncle->_col == BLACK)
             {
                  parent->_col = uncle->_col = BLACK;
                  grandParent->_col = RED;
@@ -185,21 +247,22 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
             {
                 if(cur == parent->_right)
                 {
-                    RotateR(parent);
+                    RotateL(grandParent);
                     parent->_col = BLACK;
                     grandParent->_col = RED;
                 }
                 else 
                 {
-                   RotateL(parent);
-                   RotateR(grandParent);
+                   RotateR(parent);
+                   RotateL(grandParent);
                    grandParent->_col = RED;
-                   parent->_col = BLACK;
+                   cur->_col = BLACK;
                 }
                 break;
             }
         }
     }
+    _root->_col = BLACK;
     return true;
 }
 
@@ -208,25 +271,30 @@ void RBTree<K, V>::RotateL(Node* parent)
 {
     Node* subR = parent->_right;
     Node* subRL = subR->_left;
+    Node* parentParent = parent->_parent;
 
-    Node* grandParent = parent->_parent;
-    subR->_parent = grandParent;
-    parent->_right = subR->_left;
-    subR->_left = parent;
+    parent->_right = subRL;
     parent->_parent = subR;
-
+    subR->_left = parent;
     if(subRL)
         subRL->_parent = parent;
+
+	subR->_parent = parentParent;
+
     if(_root == parent)
     {
         _root = subR;
     }
     else 
     {
-        if(parent == grandParent->_left)
-            grandParent->_left = subR;
+        if(parent == parentParent->_left)
+        {
+            parentParent->_left = subR;
+        }
         else 
-            grandParent->_right = subR;
+        {
+            parentParent->_right = subR;
+        }
     }
 }
 
@@ -235,22 +303,26 @@ void RBTree<K, V>::RotateR(Node* parent)
 {
     Node* subL = parent->_left;
     Node* subLR = subL->_right;
-    Node* grandParent = parent->_parent;
+    Node* parentParent = parent->_parent;
 
     subL->_right = parent;
+    subL->_parent = parentParent;
+
     parent->_left = subLR;
-    subL->_parent = grandParent;
     parent->_parent = subL;
-    if (subLR)
+
+    if(subLR)
         subLR->_parent = parent;
 
     if(parent == _root)
         _root = subL;
-    else 
+    else
     {
-        if(parent == grandParent->_left)
-            grandParent->_left = subL;
+        if(parent == parentParent->_left)
+            parentParent->_left = subL;
         else
-            grandParent->_right = subL;
+            parentParent->_right = subL;
+
     }
-}
+
+} 
