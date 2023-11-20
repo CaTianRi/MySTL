@@ -1,6 +1,7 @@
 #include "RBTree.hpp"
 #include <vector>
 #include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -9,7 +10,7 @@ int main()
 	const int N = 1000;
 	vector<int> v;
 	v.reserve(N);
-	//srand(time(0));
+	srand(time(0));
 
 	for (size_t i = 0; i < N; i++)
 	{
@@ -21,7 +22,7 @@ int main()
 	RBTree<int, int> t;
 	for (auto e : v)
 	{
-		if (e == 29365)
+		if (e == 635723091)
 		{
 			int i = 0;
 		}
@@ -34,10 +35,10 @@ int main()
 	cout << "Insert:" << end2 - begin2 << endl;
 
 	cout << t.IsValidRBTRee() << endl;
-	//cout << t.Height() << endl;
-	//cout << t.Size() << endl;
+	cout << t.Height() << endl;
+	cout << t.Size() << endl;
 
-	/*size_t begin1 = clock();
+	size_t begin1 = clock();
 	for (auto e : v)
 	{
 		t.Find(e);
@@ -51,7 +52,7 @@ int main()
 
 	size_t end1 = clock();
 
-	cout << "Find:" << end1 - begin1 << endl;*/
+	cout << "Find:" << end1 - begin1 << endl;
 
 	return 0;
 }
