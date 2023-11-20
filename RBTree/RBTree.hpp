@@ -1,4 +1,5 @@
 #include <iostream>
+#include <new>
 #include <utility>
 
 enum Color
@@ -16,7 +17,7 @@ struct RBTreeNode
     Color _col;
     std::pair<K, V> _kv;
 
-    RBTreeNode(const std::pair<K, V>& kv)
+    RBTreeNode(const std::pair<K, V>& kv = std::pair<K,V>())
         :_left(nullptr)
         ,_right(nullptr)
         ,_parent(nullptr)
@@ -33,8 +34,8 @@ public:
 	RBTree()
 	{
 		_root = new Node;
-		_root->_pLeft = _root;
-		_root->_pRight = _root;
+		_root->_left = _root;
+		_root->_right = _root;
 	}
 
     // 在红黑树中插入值为data的节点，插入成功返回true，否则返回false
@@ -53,7 +54,7 @@ public:
     // 检测红黑树是否为有效的红黑树，注意：其内部主要依靠_IsValidRBTRee函数检测
 	bool IsValidRBTRee();
 private:
-	bool _IsValidRBTRee(Node* pRoot, size_t blackCount, size_t pathBlack);
+	bool _IsValidRBTRee(Node* pRoot, size_t blackCount, const size_t pathBlack);
     // 左单旋
 	void RotateL(Node* pParent);
     // 右单旋
@@ -63,6 +64,51 @@ private:
 private:
 	Node* _root;
 };
+
+template <class K, class V>
+bool RBTree<K, V>::IsValidRBTRee()
+{
+    if(!_root || _root->_col)  return false;
+    
+    size_t pathBlack = 0;
+    Node* cur = _root;
+    while(cur)
+    {
+        if(cur->_col == BLACK)
+            ++pathBlack;
+        cur = cur->_left;
+    }
+    int blackCount = 0;
+
+    return _IsValidRBTRee(_root, blackCount, pathBlack);
+}
+
+template <class K, class V>
+bool RBTree<K, V>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const size_t pathBlack)
+{
+    if(!pRoot)
+    {
+        if(blackCount != pathBlack)
+        {
+            std::cout << "有连续的红色结点" << std::endl;
+            return false;
+        }
+        return true;
+    }
+
+    if(pRoot->_col == RED && pRoot->_parent->_col == RED)
+    {
+        std::cout << "有连续的红色结点" << std::endl;
+        return false;
+    }
+
+    if(pRoot->_col == BLACK)
+        ++blackCount;
+
+    return _IsValidRBTRee(pRoot->_left, blackCount, pathBlack)
+        && _IsValidRBTRee(pRoot->_right, blackCount, pathBlack);
+}
+
 
 template <class K, class V> 
 bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
@@ -154,6 +200,7 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
             }
         }
     }
+    return true;
 }
 
 template <class K, class V>
