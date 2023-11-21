@@ -35,24 +35,24 @@ int main()
 	cout << "Insert:" << end2 - begin2 << endl;
 
 	cout << t.IsValidRBTRee() << endl;
-	cout << t.Height() << endl;
-	cout << t.Size() << endl;
-
-	size_t begin1 = clock();
-	for (auto e : v)
-	{
-		t.Find(e);
-	}
-
-
-	for (size_t i = 0; i < N; i++)
-	{
-		t.Find((rand() + i));
-	}
-
-	size_t end1 = clock();
-
-	cout << "Find:" << end1 - begin1 << endl;
-
-	return 0;
+//	cout << t.Height() << endl;
+//	cout << t.Size() << endl;
+//
+//	size_t begin1 = clock();
+//	for (auto e : v)
+//	{
+//		t.Find(e);
+//	}
+//
+//
+//	for (size_t i = 0; i < N; i++)
+//	{
+//		t.Find((rand() + i));
+//	}
+//
+//	size_t end1 = clock();
+//
+//	cout << "Find:" << end1 - begin1 << endl;
+//
+//	return 0;
 }

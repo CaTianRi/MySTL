@@ -9,28 +9,44 @@ enum Color
     BLACK
 };
 
-template <class K, class V>
+
+
+template <class T>
 struct RBTreeNode
 {
-    RBTreeNode<K, V>* _left;
-    RBTreeNode<K, V>* _right;
-    RBTreeNode<K, V>* _parent;
+    RBTreeNode<T>* _left;
+    RBTreeNode<T>* _right;
+    RBTreeNode<T>* _parent;
     Color _col;
-    std::pair<K, V> _kv;
+    T _data;
 
-    RBTreeNode(const std::pair<K, V>& kv)
+    RBTreeNode(const T& data)
         :_left(nullptr)
         ,_right(nullptr)
         ,_parent(nullptr)
-        ,_kv(kv)
+        ,_data(data)
         ,_col(RED)
     {}
 };
 
-template<class K, class V>
+template <class T>
+struct _TreeIterator
+{
+    typedef RBTreeNode<T> Node;
+    typedef _TreeIterator<T> self;
+    Node* _node;
+    
+    T& operator*()
+    {
+        return _node->_kv;
+    }
+};
+
+
+template<class K, class T, class KeyOfT>
 class RBTree
 {
-	typedef RBTreeNode<K, V> Node;
+	typedef RBTreeNode<T> Node;
 public:
 //	RBTree()
 //	{
@@ -41,10 +57,10 @@ public:
 
     // 在红黑树中插入值为data的节点，插入成功返回true，否则返回false
     // 注意：为了简单起见，本次实现红黑树不存储重复性元素
-	bool Insert(const std::pair<K, V>& data);
+	bool Insert(const T& data);
     
     // 检测红黑树中是否存在值为data的节点，存在返回该节点的地址，否则返回nullptr
-    Node* Find(const std::pair<K, V>& data);
+    Node* Find(const T& data);
     
     // 获取红黑树最左侧节点
 	Node* LeftMost();
@@ -66,8 +82,8 @@ private:
 	Node* _root = nullptr;
 };
 
-template <class K, class V>
-typename RBTree<K, V>::Node* RBTree<K, V>::LeftMost()
+template <class K, class T, class KeyOfT>
+typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::LeftMost()
 {
     if(!_root)  
         return _root;
@@ -82,8 +98,8 @@ typename RBTree<K, V>::Node* RBTree<K, V>::LeftMost()
 }
 
 
-template <class K, class V>
-typename RBTree<K, V>::Node* RBTree<K, V>::Find(const std::pair<K, V>& data)
+template <class K, class T, class KeyOfT>
+typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::Find(const T& data)
 {
     Node* cur = _root;
     while(cur)
@@ -106,8 +122,8 @@ typename RBTree<K, V>::Node* RBTree<K, V>::Find(const std::pair<K, V>& data)
 }
 
 
-template <class K, class V>
-typename RBTree<K, V>::Node* RBTree<K, V>::RightMost()
+template <class K, class T, class KeyOfT>
+typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::RightMost()
 {
     Node* cur = _root;
     while(cur->_right)
