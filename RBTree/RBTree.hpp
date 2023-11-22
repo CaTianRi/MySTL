@@ -138,6 +138,9 @@ public:
     
     // 获取红黑树最左侧节点
 	Node* LeftMost();
+
+    // 中序遍历
+    void InOrder() { _InOrder(_root); }
     
     // 获取红黑树最右侧节点
 	Node* RightMost();
@@ -153,9 +156,22 @@ private:
     // 为了操作树简单起见：获取根节点
 	Node*& GetRoot() { return _root; }
 private:
+    void _InOrder(Node* root);
 	Node* _root = nullptr;
     KeyOfT kot;
 };
+
+template <class K, class T, class KeyOfT>
+void RBTree<K, T, KeyOfT>::_InOrder(Node* root)
+{
+    if(!root)   
+        return;
+
+    _InOrder(root->_left);
+    std::cout << _root->_data << " ";
+    _InOrder(root->_right);
+}
+
 
 template <class K, class T, class KeyOfT>
 typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::LeftMost()
@@ -213,7 +229,7 @@ typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::RightMost()
 template <class K, class T, class KeyOfT>
 bool RBTree<K, T, KeyOfT>::IsValidRBTRee()
 {
-    if(!_root || _root->_col)  return false;
+    if(!_root || _root->_col == RED)  return false;
     
     size_t pathBlack = 0;
     Node* cur = _root;

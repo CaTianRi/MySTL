@@ -40,25 +40,25 @@ void test_set()
 
 int main()
 {
-	const int N = 10000;
-	vector<int> v;
-	v.reserve(N);
-	srand(time(0));
+//	const int N = 10000;
+	vector<int> v {9,8,7,6,5,4,3,2,1,0};
+//	v.reserve(N);
+//	srand(time(0));
 
-	for (size_t i = 0; i < N; i++)
-	{
-		v.push_back(rand() + i);
-		//cout << v.back() << endl;
-	}
+//	for (size_t i = 0; i < N; i++)
+//	{
+//		v.push_back(rand() + i);
+//		//cout << v.back() << endl;
+//	}
 
 	size_t begin2 = clock();
 	RBTree<int, int, bit::set<int>::SetKeyOfT> t;
 	for (auto e : v)
 	{
-		if (e == 29365)
-		{
-			int i = 0;
-		}
+//		if (e == 29365)
+//		{
+//			int i = 0;
+//		}
 
 		//cout << "Insert:" << e << "->";
 		t.Insert(e);
@@ -68,7 +68,10 @@ int main()
 
 	cout << "Insert:" << end2 - begin2 << endl;
 
-	cout << t.IsValidRBTRee() << endl;
+	t.IsValidRBTRee();
+    t.InOrder();
+    
+
 //	cout << t.Height() << endl;
 //	cout << t.Size() << endl;
 //
