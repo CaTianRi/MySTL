@@ -5,8 +5,30 @@
 
 using namespace std;
 
+void test_RBT()
+{
+	cout << "------------------------------ RBTree_test() ------------------------------" << endl;
+	vector<int> v {9,8,7,6,5,4,3,2,1,0};
+
+	size_t begin2 = clock();
+	RBTree<int, int, bit::set<int>::SetKeyOfT> t;
+	for (auto e : v)
+	{
+		t.Insert(e);
+	}
+	size_t end2 = clock();
+
+	cout << "Insert:" << end2 - begin2 << endl;
+
+	t.IsValidRBTRee();
+    t.InOrder();
+
+	cout << "------------------------------------------------------------------------------" << endl;
+}
+
 void test_set()
 {
+	cout << "--------------------------------- Set_test() ---------------------------------" << endl;
     bit::set<int> s;
 	s.insert(4);
 	s.insert(1);
@@ -20,7 +42,7 @@ void test_set()
 	bit::set<int>::iterator it = s.begin();
 	while (it != s.end())
 	{
-		*it += 1;
+//		*it += 1;
 
 		cout << *it << " ";
 		++it;
@@ -29,68 +51,21 @@ void test_set()
 
 	// key޸
 	it = s.begin();
-	*it = 100;
+//	*it = 100;
 
 	for (auto e : s)
 	{
 		cout << e << " ";
 	}
 	cout << endl;
+	cout << "------------------------------------------------------------------------------" << endl;
 }
+
+
+
 
 int main()
 {
-//	const int N = 10000;
-	vector<int> v {9,8,7,6,5,4,3,2,1,0};
-//	v.reserve(N);
-//	srand(time(0));
-
-//	for (size_t i = 0; i < N; i++)
-//	{
-//		v.push_back(rand() + i);
-//		//cout << v.back() << endl;
-//	}
-
-	size_t begin2 = clock();
-	RBTree<int, int, bit::set<int>::SetKeyOfT> t;
-	for (auto e : v)
-	{
-//		if (e == 29365)
-//		{
-//			int i = 0;
-//		}
-
-		//cout << "Insert:" << e << "->";
-		t.Insert(e);
-		//cout << t.IsBalance() << endl;
-	}
-	size_t end2 = clock();
-
-	cout << "Insert:" << end2 - begin2 << endl;
-
-	t.IsValidRBTRee();
-    t.InOrder();
-    
-
-//	cout << t.Height() << endl;
-//	cout << t.Size() << endl;
-//
-//	size_t begin1 = clock();
-//	for (auto e : v)
-//	{
-//		t.Find(e);
-//	}
-//
-//	for (size_t i = 0; i < N; i++)
-//	{
-//		t.Find((rand() + i));
-//	}
-//
-//	size_t end1 = clock();
-//
-//	cout << "Find:" << end1 - begin1 << endl;
-//
-//	return 0;
-//}
+	test_set();
     return 0;
 }

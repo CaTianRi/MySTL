@@ -13,14 +13,25 @@ namespace bit
                 return key;
             }
         };
-        typedef typename RBTree<K, K, SetKeyOfT>::iterator iterator;
+        typedef typename RBTree<K, K, SetKeyOfT>::const_iterator iterator;
+        typedef typename RBTree<K, K, SetKeyOfT>::const_iterator const_iterator;
 
         iterator begin()
         {
             return _t.begin();
         }
 
-        iterator end()
+        iterator end() 
+        {
+            return _t.end();
+        }
+
+        const_iterator begin() const
+        {
+            return _t.begin();
+        }
+
+        const_iterator end() const
         {
             return _t.end();
         }

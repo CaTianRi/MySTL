@@ -27,28 +27,28 @@ struct RBTreeNode
     {}
 };
 
-template <class T>
+template <class T, class Ref, class Ptr>
 struct _TreeIterator
 {
     typedef RBTreeNode<T> Node;
-    typedef _TreeIterator<T> self;
+    typedef _TreeIterator<T, Ref, Ptr> self;
     Node* _node;
 
     _TreeIterator(Node* node)
         :_node(node)
     {}
     
-    T& operator*()
+    Ref operator*()
     {
         return _node->_data;
     }
 
-    T* operator->()
+    Ptr operator->()
     {
         return &_node->_data;
     }
 
-    self& operator--()
+    Ref operator--()
     {
         Node* cur = _node;
         Node* parent = cur->_parent;
@@ -68,7 +68,7 @@ struct _TreeIterator
         return *this;
     }
 
-    self& operator++()
+    Ref operator++()
     {
         if(_node->_right)
         {
@@ -110,7 +110,9 @@ class RBTree
 {
 public:
 	typedef RBTreeNode<T> Node;
-    typedef _TreeIterator<T> iterator;
+    typedef _TreeIterator<T, T&, T*> iterator;
+    typedef _TreeIterator<T, const T&, const T*> const_iterator;
+
 
 //	RBTree()
 //	{
@@ -118,6 +120,16 @@ public:
 //		_root->_left = _root;
 //		_root->_right = _root;
 //	}
+
+    const_iterator begin() const 
+    {
+        return const_iterator(LeftMost());
+    }
+
+    const_iterator end() const 
+    {
+        return const_iterator(nullptr);
+    }
 
     iterator begin()
     {
@@ -140,7 +152,11 @@ public:
 	Node* LeftMost();
 
     // 中序遍历
-    void InOrder() { _InOrder(_root); }
+    void InOrder() 
+    {
+        _InOrder(_root);
+        std::cout << std::endl;
+    }
     
     // 获取红黑树最右侧节点
 	Node* RightMost();
@@ -168,7 +184,7 @@ void RBTree<K, T, KeyOfT>::_InOrder(Node* root)
         return;
 
     _InOrder(root->_left);
-    std::cout << _root->_data << " ";
+    std::cout << root->_data << " ";
     _InOrder(root->_right);
 }
 
@@ -300,9 +316,10 @@ std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::I
     }
 
     cur = new Node(data);
+    Node* ret = cur;
     cur->_parent = parent;
 
-    if(!parent->_left)
+    if(kot(cur->_data) < kot(parent->_data))
         parent->_left = cur;
     else 
         parent->_right = cur;
@@ -312,7 +329,7 @@ std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::I
         Node* grandParent = parent->_parent;
         if(parent == grandParent->_left)
         {
-            Node* uncle = parent->_right;
+            Node* uncle = grandParent->_right;
             if(uncle && uncle->_col == RED)
             {
                  parent->_col = uncle->_col = BLACK;
@@ -341,7 +358,7 @@ std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::I
         }
         else 
         {
-            Node* uncle = grandParent->_right;
+            Node* uncle = grandParent->_left;
 
             if(uncle && uncle->_col == BLACK)
             {
@@ -370,7 +387,7 @@ std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::I
         }
     }
     _root->_col = BLACK;
-    return std::make_pair(cur, true);
+    return std::make_pair(ret, true);
 }
 
 template <class K, class V, class KeyOfT>
@@ -382,11 +399,12 @@ void RBTree<K, V, KeyOfT>::RotateL(Node* parent)
 
     parent->_right = subRL;
     parent->_parent = subR;
+	subR->_parent = parentParent;
     subR->_left = parent;
     if(subRL)
         subRL->_parent = parent;
 
-	subR->_parent = parentParent;
+
 
     if(_root == parent)
     {
