@@ -1,13 +1,46 @@
-#include "RBTree.hpp"
+#include "Myset.hpp"
 #include <vector>
 #include <cstdlib>
 #include <ctime>
 
 using namespace std;
 
+void test_set()
+{
+    bit::set<int> s;
+	s.insert(4);
+	s.insert(1);
+	s.insert(2);
+	s.insert(3);
+	s.insert(2);
+	s.insert(0);
+	s.insert(10);
+	s.insert(5);
+
+	bit::set<int>::iterator it = s.begin();
+	while (it != s.end())
+	{
+		*it += 1;
+
+		cout << *it << " ";
+		++it;
+	}
+	cout << endl;
+
+	// key޸
+	it = s.begin();
+	*it = 100;
+
+	for (auto e : s)
+	{
+		cout << e << " ";
+	}
+	cout << endl;
+}
+
 int main()
 {
-	const int N = 1000;
+	const int N = 10000;
 	vector<int> v;
 	v.reserve(N);
 	srand(time(0));
@@ -19,16 +52,17 @@ int main()
 	}
 
 	size_t begin2 = clock();
-	RBTree<int, int> t;
+	RBTree<int, int, bit::set<int>::SetKeyOfT> t;
 	for (auto e : v)
 	{
-		if (e == 635723091)
+		if (e == 29365)
 		{
 			int i = 0;
 		}
 
-		t.Insert(make_pair(e, e));
-		cout << "Insert:" << e << "->" << t.IsValidRBTRee() << endl;
+		//cout << "Insert:" << e << "->";
+		t.Insert(e);
+		//cout << t.IsBalance() << endl;
 	}
 	size_t end2 = clock();
 
@@ -44,7 +78,6 @@ int main()
 //		t.Find(e);
 //	}
 //
-//
 //	for (size_t i = 0; i < N; i++)
 //	{
 //		t.Find((rand() + i));
@@ -55,4 +88,6 @@ int main()
 //	cout << "Find:" << end1 - begin1 << endl;
 //
 //	return 0;
+//}
+    return 0;
 }

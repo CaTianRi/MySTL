@@ -9,8 +9,6 @@ enum Color
     BLACK
 };
 
-
-
 template <class T>
 struct RBTreeNode
 {
@@ -35,10 +33,74 @@ struct _TreeIterator
     typedef RBTreeNode<T> Node;
     typedef _TreeIterator<T> self;
     Node* _node;
+
+    _TreeIterator(Node* node)
+        :_node(node)
+    {}
     
     T& operator*()
     {
-        return _node->_kv;
+        return _node->_data;
+    }
+
+    T* operator->()
+    {
+        return &_node->_data;
+    }
+
+    self& operator--()
+    {
+        Node* cur = _node;
+        Node* parent = cur->_parent;
+        if(parent && cur == parent->_left)
+        {
+            cur = parent;
+        }
+        else if(parent && cur == parent->_right) 
+        {
+            cur = parent;
+            while(cur->_left)
+                cur = cur->_left;
+        }
+
+        _node = cur;
+
+        return *this;
+    }
+
+    self& operator++()
+    {
+        if(_node->_right)
+        {
+            Node* cur = _node->_right;
+            while(cur->_left)
+                cur = cur->_left;
+
+            _node = cur;
+        }
+        else 
+        {
+            Node* cur = _node;
+            Node* parent = cur->_parent;
+            while(parent && cur == parent->_right)
+            {
+                cur = parent;
+                parent = parent->_parent;
+            }
+            _node = parent;
+        }
+
+        return *this;
+    }
+
+    bool operator!=(const self& s)
+    {
+        return _node != s._node;
+    }
+
+    bool operator==(const self& s)
+    {
+        return _node == s._node;
     }
 };
 
@@ -46,8 +108,10 @@ struct _TreeIterator
 template<class K, class T, class KeyOfT>
 class RBTree
 {
-	typedef RBTreeNode<T> Node;
 public:
+	typedef RBTreeNode<T> Node;
+    typedef _TreeIterator<T> iterator;
+
 //	RBTree()
 //	{
 //		_root = new Node;
@@ -55,9 +119,19 @@ public:
 //		_root->_right = _root;
 //	}
 
+    iterator begin()
+    {
+        return iterator(LeftMost());
+    }
+
+    iterator end()
+    {
+        return iterator(nullptr);
+    }
+
     // 在红黑树中插入值为data的节点，插入成功返回true，否则返回false
     // 注意：为了简单起见，本次实现红黑树不存储重复性元素
-	bool Insert(const T& data);
+    std::pair<iterator, bool> Insert(const T& data);
     
     // 检测红黑树中是否存在值为data的节点，存在返回该节点的地址，否则返回nullptr
     Node* Find(const T& data);
@@ -80,6 +154,7 @@ private:
 	Node*& GetRoot() { return _root; }
 private:
 	Node* _root = nullptr;
+    KeyOfT kot;
 };
 
 template <class K, class T, class KeyOfT>
@@ -135,8 +210,8 @@ typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::RightMost()
 }
 
 
-template <class K, class V>
-bool RBTree<K, V>::IsValidRBTRee()
+template <class K, class T, class KeyOfT>
+bool RBTree<K, T, KeyOfT>::IsValidRBTRee()
 {
     if(!_root || _root->_col)  return false;
     
@@ -153,8 +228,8 @@ bool RBTree<K, V>::IsValidRBTRee()
     return _IsValidRBTRee(_root, blackCount, pathBlack);
 }
 
-template <class K, class V>
-bool RBTree<K, V>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const size_t pathBlack)
+template <class K, class T, class KeyOfT>
+bool RBTree<K, T, KeyOfT>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const size_t pathBlack)
 {
     if(!pRoot)
     {
@@ -180,32 +255,32 @@ bool RBTree<K, V>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const size_t p
 }
 
 
-template <class K, class V> 
-bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
+template <class K, class T, class KeyOfT> 
+std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::Insert(const T& data)
 {
     if(_root == nullptr)
     {
         _root = new Node(data);
         _root->_col = BLACK;
-        return true;
+        return std::make_pair(iterator(_root), true);
     }
 
     Node* cur = _root;
     Node* parent = nullptr;
     while(cur)
     {
-        if(cur->_kv.first < data.first)
+        if(kot(cur->_data) < kot(data))
         {
             parent = cur;
             cur = cur->_right;
         }
-        else if(cur->_kv.first > data.first)
+        else if(kot(cur->_data) > kot(data))
         {
             parent = cur;
             cur = cur->_left;
         }
         else 
-            return false;
+            return std::make_pair(iterator(cur), false);
     }
 
     cur = new Node(data);
@@ -279,11 +354,11 @@ bool RBTree<K, V>::Insert(const std::pair<K, V>& data)
         }
     }
     _root->_col = BLACK;
-    return true;
+    return std::make_pair(cur, true);
 }
 
-template <class K, class V>
-void RBTree<K, V>::RotateL(Node* parent)
+template <class K, class V, class KeyOfT>
+void RBTree<K, V, KeyOfT>::RotateL(Node* parent)
 {
     Node* subR = parent->_right;
     Node* subRL = subR->_left;
@@ -314,8 +389,8 @@ void RBTree<K, V>::RotateL(Node* parent)
     }
 }
 
-template <class K, class V>
-void RBTree<K, V>::RotateR(Node* parent)
+template <class K, class V, class KeyOfT>
+void RBTree<K, V, KeyOfT>::RotateR(Node* parent)
 {
     Node* subL = parent->_left;
     Node* subLR = subL->_right;
@@ -338,7 +413,5 @@ void RBTree<K, V>::RotateR(Node* parent)
             parentParent->_left = subL;
         else
             parentParent->_right = subL;
-
     }
-
 } 
