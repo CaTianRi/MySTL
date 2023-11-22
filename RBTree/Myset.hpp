@@ -13,32 +13,25 @@ namespace bit
                 return key;
             }
         };
+
         typedef typename RBTree<K, K, SetKeyOfT>::const_iterator iterator;
         typedef typename RBTree<K, K, SetKeyOfT>::const_iterator const_iterator;
 
-        iterator begin()
+        iterator begin()const
         {
             return _t.begin();
         }
 
-        iterator end() 
-        {
-            return _t.end();
-        }
-
-        const_iterator begin() const
-        {
-            return _t.begin();
-        }
-
-        const_iterator end() const
+        iterator end()const 
         {
             return _t.end();
         }
 
         std::pair<iterator, bool> insert(const K& key)
-        {
-            return _t.Insert(key);
+        {   /*使用pair的拷贝(构造)函数来返回,如果是同类型则为拷贝，
+            不同类型则为构造*/
+            std::pair<typename RBTree<K, K, SetKeyOfT>::iterator, bool> ret = _t.Insert(key);
+            return std::pair<iterator, bool>(ret.first, ret.second);
         }
 
     private:
