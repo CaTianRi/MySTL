@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <new>
 #include <system_error>

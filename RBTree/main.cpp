@@ -1,4 +1,5 @@
 #include "Myset.hpp"
+#include "MyMap.hpp"
 #include <vector>
 #include <cstdlib>
 #include <ctime>
@@ -61,11 +62,48 @@ void test_set()
 	cout << "------------------------------------------------------------------------------" << endl;
 }
 
+void test_Map()
+{
+	cout << "------------------------------ MyMap_test  ------------------------------" << endl;
+    	bit::map<string, string> dict;
+	dict.insert(make_pair("sort", ""));
+	dict.insert(make_pair("sort", "xx"));
+	dict.insert(make_pair("left", ""));
+	dict.insert(make_pair("right", "ұ"));
 
+	bit::map<string, string>::iterator it = dict.begin();
+	while (it != dict.end())
+	{
+		// key޸
+		it->first += 'x';
+		it->second += 'y';
+
+		cout << it->first << ":" << it->second << endl;
+		++it;
+	}
+	cout << endl;
+
+	string arr[] = { "㽶", "","ƻ", "", "ƻ", "", "ƻ", "ƻ", "", "ƻ", "㽶", "ƻ", "㽶" };
+	bit::map<string, int> countMap;
+	for (auto& e : arr)
+	{
+		countMap[e]++;
+	}
+
+	for (auto& kv : countMap)
+	{
+		cout << kv.first << ":" << kv.second << endl;
+	}
+	cout << endl;
+
+	cout << "------------------------------------------------------------------------------" << endl;
+}
 
 
 int main()
 {
+    test_RBT();
 	test_set();
+    test_Map();
     return 0;
 }
