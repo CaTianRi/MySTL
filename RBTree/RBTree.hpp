@@ -32,11 +32,17 @@ struct _TreeIterator
 {
     typedef RBTreeNode<T> Node;
     typedef _TreeIterator<T, Ref, Ptr> self;
+    typedef _TreeIterator<T, T&, T*> iterator;  //仿SGI-STL
     Node* _node;
 
     _TreeIterator(Node* node)
         :_node(node)
     {}
+
+    _TreeIterator(const iterator& _it) //构造函数，方便set中的inset函数中的pair拷贝
+        :_node(_it._node)
+    {
+    }
     
     Ref operator*()
     {
@@ -45,10 +51,10 @@ struct _TreeIterator
 
     Ptr operator->()
     {
-        return &_node->_data;
+        return &operator*();
     }
 
-    Ref operator--()
+    self& operator--()
     {
         Node* cur = _node;
         Node* parent = cur->_parent;
@@ -68,7 +74,7 @@ struct _TreeIterator
         return *this;
     }
 
-    Ref operator++()
+    self& operator++()
     {
         if(_node->_right)
         {
@@ -112,8 +118,6 @@ public:
 	typedef RBTreeNode<T> Node;
     typedef _TreeIterator<T, T&, T*> iterator;
     typedef _TreeIterator<T, const T&, const T*> const_iterator;
-
-
 //	RBTree()
 //	{
 //		_root = new Node;
@@ -149,7 +153,7 @@ public:
     Node* Find(const T& data);
     
     // 获取红黑树最左侧节点
-	Node* LeftMost();
+	Node* LeftMost()const;
 
     // 中序遍历
     void InOrder() 
@@ -159,7 +163,7 @@ public:
     }
     
     // 获取红黑树最右侧节点
-	Node* RightMost();
+	Node* RightMost()const;
     
     // 检测红黑树是否为有效的红黑树，注意：其内部主要依靠_IsValidRBTRee函数检测
 	bool IsValidRBTRee();
@@ -190,7 +194,7 @@ void RBTree<K, T, KeyOfT>::_InOrder(Node* root)
 
 
 template <class K, class T, class KeyOfT>
-typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::LeftMost()
+typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::LeftMost()const
 {
     if(!_root)  
         return _root;
@@ -230,13 +234,11 @@ typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::Find(const T& data)
 
 
 template <class K, class T, class KeyOfT>
-typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::RightMost()
+typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::RightMost()const
 {
     Node* cur = _root;
     while(cur->_right)
-    {
         cur = cur->_right;
-    }
 
     return cur;
 }
@@ -287,7 +289,7 @@ bool RBTree<K, T, KeyOfT>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const 
 }
 
 
-template <class K, class T, class KeyOfT> 
+template <class K, class T, class KeyOfT>   //改iterator为Node*。
 std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::Insert(const T& data)
 {
     if(_root == nullptr)
