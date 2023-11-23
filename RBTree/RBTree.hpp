@@ -45,31 +45,28 @@ struct _TreeIterator
     {
     }
     
-    Ref operator*()
+    Ref operator*()const
     {
         return _node->_data;
     }
 
-    Ptr operator->()
+    Ptr operator->()const
     {
         return &operator*();
     }
 
     self& operator--()
     {
-        Node* cur = _node;
-        Node* parent = cur->_parent;
-        if(parent && cur == parent->_left)
+        Node* cur = _node->_parent;
+        if(cur && _node == cur->_left)
         {
-            cur = parent;
+            Node* parent = cur->_parent;
+            while(parent && cur == parent->_left)
+            {
+                cur = parent;
+                parent = parent->_parent;
+            }
         }
-        else if(parent && cur == parent->_right) 
-        {
-            cur = parent;
-            while(cur->_left)
-                cur = cur->_left;
-        }
-
         _node = cur;
 
         return *this;
@@ -290,7 +287,7 @@ bool RBTree<K, T, KeyOfT>::_IsValidRBTRee(Node* pRoot, size_t blackCount, const 
 }
 
 
-template <class K, class T, class KeyOfT>   //改iterator为Node*。
+template <class K, class T, class KeyOfT>   //或者改iterator为Node*。
 std::pair<typename RBTree<K, T, KeyOfT>::iterator, bool> RBTree<K, T, KeyOfT>::Insert(const T& data)
 {
     if(_root == nullptr)

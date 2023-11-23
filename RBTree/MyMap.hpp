@@ -15,8 +15,8 @@ namespace bit
             }
         };
     public:
-        typedef typename RBTree<K, std::pair<K, T>, Mapkot>::iterator iterator;
-        typedef typename RBTree<K, std::pair<K, T>, Mapkot>::const_iterator const_iterator;
+        typedef typename RBTree<K, std::pair<const K, T>, Mapkot>::iterator iterator;
+        typedef typename RBTree<K, std::pair<const K, T>, Mapkot>::const_iterator const_iterator;
 
         const_iterator end() const 
         {
@@ -38,7 +38,7 @@ namespace bit
             return _t.begin();
         }
         
-        std::pair<iterator,bool> insert(const std::pair<K, T> data)
+        std::pair<iterator,bool> insert(const std::pair<const K, T> data)
         {
             return _t.Insert(data);
         }
@@ -49,6 +49,6 @@ namespace bit
             return ret.first->second;
         }
     private:
-        RBTree<K, std::pair<K, T>, Mapkot> _t;
+        RBTree<K, std::pair<const K, T>, Mapkot> _t;
     };
 }

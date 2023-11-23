@@ -24,6 +24,14 @@ void test_RBT()
 	t.IsValidRBTRee();
     t.InOrder();
 
+    RBTree<int, int, bit::set<int>::SetKeyOfT>::iterator it = t.RightMost();
+    while(it != t.begin())
+    {
+        --it;
+        cout << *it << " ";
+    }
+    cout << endl;
+
 	cout << "------------------------------------------------------------------------------" << endl;
 }
 
@@ -74,9 +82,9 @@ void test_Map()
 	bit::map<string, string>::iterator it = dict.begin();
 	while (it != dict.end())
 	{
-		// key޸
-		it->first += 'x';
-		it->second += 'y';
+		// error
+//		it->first += 'x';
+//		it->second += 'y';
 
 		cout << it->first << ":" << it->second << endl;
 		++it;
