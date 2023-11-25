@@ -53,10 +53,17 @@ struct _TreeIterator
         return &operator*();
     }
 
+
     self& operator--()
     {
-        Node* cur = _node->_parent;
-        if(cur && _node == cur->_left)
+        Node* cur = _node;
+        if(cur && cur->_left)
+        {
+            cur = cur->_left;
+            while(cur->_right)
+                cur = cur->_right;
+        }
+        else if(cur && !cur->_left)
         {
             Node* parent = cur->_parent;
             while(parent && cur == parent->_left)
@@ -64,6 +71,7 @@ struct _TreeIterator
                 cur = parent;
                 parent = parent->_parent;
             }
+            cur = parent;
         }
         _node = cur;
 
