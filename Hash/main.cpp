@@ -20,7 +20,7 @@ void TestHT1()
 	ht.Erase(3);
 	ht.print();
 
-	if (ht.Find(3))
+	if (ht.Find(3) != -1)
 	{
 		cout << "3存在" << endl;
 	}

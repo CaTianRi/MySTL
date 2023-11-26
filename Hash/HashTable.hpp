@@ -21,40 +21,79 @@ template<class K, class V, class KeyOfValue, class HF>
 class HashBucket;
 
 // 注意：因为哈希桶在底层是单链表结构，所以哈希桶的迭代器不需要--操作
-template <class K, class V, class KeyOfValue, class HF>
+template <class K, class V, class Ref, class Ptr, class KeyOfValue, class HF>
 struct HBIterator 
 {
 	typedef HashBucket<K, V, KeyOfValue, HF> HashBucket;
 	typedef HashBucketNode<K, V> Node;
-	typedef HBIterator<K, V, KeyOfValue, HF> Self;
+	typedef HBIterator<K, V, Ref, Ptr, KeyOfValue, HF> Self;
+    typedef HBIterator<K, V, V&, V*, KeyOfValue, HF> iterator;
 
-	HBIterator(Node* pNode = nullptr, HashBucket* pHt = nullptr);
-//	Self& operator++()
-//	{
-//         // 当前迭代器所指节点后还有节点时直接取其下一个节点
-//		if (_pNode->_pNext)
-//			_pNode = _pNode->_pNext;
-//		else
-//		{
-//			// 找下一个不空的桶，返回该桶中第一个节点
-//			size_t bucketNo = _pHt->HashFunc(KeyOfValue()(_pNode->_data))+1;
-//			for (; bucketNo < _pHt->BucketCount(); ++bucketNo)
-//			{
-//				if (_pNode = _pHt->_ht[bucketNo])
-//					break;
-//			}
-//		}
-//
-//		return *this;
-//	}
+    HBIterator(iterator& it)
+    :_node(it._node)
+    ,_pHt(it._pHt)
+    {}
+
+	HBIterator(Node* pNode = nullptr, HashBucket* pHt = nullptr)
+    :_node(pNode)
+    ,_pHt(pHt)
+    {}
+
+    Self& operator++();
 	Self operator++(int);
-    V& operator*();
-	V* operator->();
+    Ref operator*();
+	Ptr operator->();
 	bool operator==(const Self& it) const;
 	bool operator!=(const Self& it) const;
-	PNode _pNode;             // 当前迭代器关联的节点
+	Node* _node;             // 当前迭代器关联的节点
 	HashBucket* _pHt;         // 哈希桶--主要是为了找下一个空桶时候方便
 };
+
+template <class K, class V, class KeyOfValue, class HF>
+class HashBucket
+{
+    typedef HashBucketNode<K, V> Node;
+
+    template<class Key, class Value, class Ref, class Ptr, class KeyOfT, class Hash>  //clang error
+	friend struct HTIterator;
+
+    typedef HBIterator<K, V, V&, V*, KeyOfValue, HF> iterator;
+    typedef HBIterator<K, V, const V&, const V*, KeyOfValue, HF> const_iterator;
+
+    //迭代器    //to do
+    const_iterator begin() const;   
+    iterator begin();
+    iterator end();
+    const_iterator end() const;
+    
+    iterator find(const K& key);
+    std::pair<iterator, bool> insert(const std::pair<K, V> val);    //插入
+    bool erase(const K& key);       //删除
+
+    size_t size() { return _size; }
+        
+    bool empty() { return _size == 0; }
+
+private:
+	void CheckCapacity()
+    {
+        if(_size * 10 / _ht.size() >= 1)
+        {
+            HashBucket<K, V, KeyOfValue, HF> newHT;
+            newHT._ht.resize(_ht.size() * 2);           // ToDo             
+            for(size_t i = 0; i < _ht.size(); ++i)
+            {
+                newHT.insert();
+            }
+
+            _ht.swap(newHT._ht);
+        }
+    }
+
+    std::vector<Node*> _ht;
+    size_t _size;
+};
+
 
 // unordered_map中存储的是pair<K, V>的键值对，K为key的类型，V为value的类型，HF哈希函数类型
 // unordered_map在实现时，只需将hashbucket中的接口重新封装即可

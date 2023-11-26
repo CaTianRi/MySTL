@@ -60,6 +60,7 @@ namespace Close_Hash
 		size_t Find(const K& key)
         {
             size_t hashi = HashFunc(key);
+            CheckCapacity();
             while(_ht[hashi]._state != EMPTY)
             {
                 if(_ht[hashi]._state == EXIST
@@ -110,7 +111,7 @@ namespace Close_Hash
 
 		void CheckCapacity()
         {
-            if(_size * 10 / _ht.size() == 7)
+            if(_size * 10 / _ht.size() >= 7)
             {
                 HashTable<K, V> newHT;
                 newHT._ht.resize(_ht.size() * 2);
