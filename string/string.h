@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <algorithm>
 #include <cassert>
 #include <cstring>
 
@@ -27,7 +28,11 @@ namespace bit
 
         string(const string& s);
 
+        string(string&& s);
+
         string& operator=(const string& s);
+
+        string& operator=(string&& s);
 
         ~string(); 
 

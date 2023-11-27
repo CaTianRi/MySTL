@@ -5,6 +5,19 @@ using namespace bit;
 
 const size_t string::npos = -1;
 
+string::string(string&& str)
+{
+    std::cout << "string(string&& str)" << std::endl;
+    swap(str);
+}
+
+string& string::operator=(string&& str)
+{
+    std::cout << "operator=(string&& str)" << std::endl;
+    swap(str);
+    return *this;
+}
+
 std::ostream& bit::operator<<(std::ostream& _cout, const bit::string& s)
 {
     for(auto it : s)
@@ -33,6 +46,7 @@ std::istream& bit::operator>>(std::istream& _cin, bit::string& s)
     
     if(i != 0)
     {
+        arr[i] = '\0';
         s += arr;
     }
 
@@ -44,6 +58,7 @@ string::string(const char* str)
     ,_capacity(_size)
     ,_str(new char[_capacity + 1])
 {
+    std::cout << "string(const char* str)" << std::endl;
     strcpy(_str, str);
 }
 
@@ -52,11 +67,13 @@ string::string(const string& s)
 ,_capacity(s._capacity)
 ,_str(new char[_capacity+1])
 {
+    std::cout << "string(const string* str)" << std::endl;
     strcpy(_str, s._str);
 }
 
 string::~string()
 {
+    std::cout << "~string()" << std::endl;
     delete[] _str;
     _size = 0;
     _capacity = 0;
@@ -64,10 +81,13 @@ string::~string()
 
 string& string::operator=(const string& s)
 {
+    std::cout << "operator=(const string&)" << std::endl;
     if(this != &s)  //地址比较，非内容比较
-    {
-        string temp(s);
-        swap(temp);
+    {   
+        char* tem = new char[s._capacity + 1];
+        strcpy(tem, s._str);
+        delete[] _str;
+        _str = tem;
     }
 
     return *this;

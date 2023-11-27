@@ -63,13 +63,33 @@ void test_4()
     cout << s1 << endl << endl;
 }
 
+bit::string tostring(int x)
+{
+    bit::string ret;
+    while(x)
+    {
+        int val = x % 10;
+        x /= 10;
+        ret += ('0' + val);
+    }
+    reverse(ret.begin(), ret.end());
+
+    return ret;
+}
+
+void test_5()
+{
+    bit::string s1;
+    s1 = tostring(1234);
+    int i;
+}
 
 int main()
 {
-    test_1();
-    test_2();
-    test_3();
-    test_4();
-
+    // test_1();
+    // test_2();
+    // test_3();
+    // test_4();
+    test_5();
     return 0;
 }
