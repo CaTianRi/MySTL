@@ -8,7 +8,7 @@ namespace bit
     public:
         struct SetKeyOfT
         {
-            const K& operator()(const K& key)
+            const K& operator()(const K& key) const
             {
                 return key;
             }
@@ -32,6 +32,11 @@ namespace bit
             不同类型则为构造*/
             std::pair<typename RBTree<K, K, SetKeyOfT>::iterator, bool> ret = _t.Insert(key);
             return std::pair<iterator, bool>(ret.first, ret.second);
+        }
+
+        iterator find(const K& key) const
+        {
+            return _t.Find(key);
         }
 
     private:

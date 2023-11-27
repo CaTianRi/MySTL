@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <new>
+#include <system_error>
 #include <utility>
 
 enum Color
@@ -53,7 +55,6 @@ struct _TreeIterator
         return &operator*();
     }
 
-
     self& operator--()
     {
         Node* cur = _node;
@@ -77,6 +78,7 @@ struct _TreeIterator
 
         return *this;
     }
+
 
     self& operator++()
     {
@@ -154,7 +156,8 @@ public:
     std::pair<iterator, bool> Insert(const T& data);
     
     // 检测红黑树中是否存在值为data的节点，存在返回该节点的地址，否则返回nullptr
-    Node* Find(const T& data);
+    iterator Find(const K& data);
+    const_iterator Find(const K& data) const;
     
     // 获取红黑树最左侧节点
 	Node* LeftMost()const;
@@ -186,6 +189,52 @@ private:
 };
 
 template <class K, class T, class KeyOfT>
+typename RBTree<K, T, KeyOfT>::const_iterator RBTree<K, T, KeyOfT>::Find(const K& data) const
+{
+    Node* cur = _root;
+    while(cur)
+    {
+        if(kot(cur->_data) < data)
+        {
+            cur = cur->_right;
+        }
+        else if(kot(cur->_data) > data)
+        {
+            cur = cur->_left;
+        }
+        else 
+        {
+            return cur;
+        }
+    }
+
+    return nullptr;
+}
+
+template <class K, class T, class KeyOfT>
+typename RBTree<K, T, KeyOfT>::iterator RBTree<K, T, KeyOfT>::Find(const K& data) 
+{
+    Node* cur = _root;
+    while(cur)
+    {
+        if(kot(cur->_data) < data)
+        {
+            cur = cur->_right;
+        }
+        else if(kot(cur->_data) > data)
+        {
+            cur = cur->_left;
+        }
+        else 
+        {
+            return cur;
+        }
+    }
+
+    return nullptr;
+}
+
+template <class K, class T, class KeyOfT>
 void RBTree<K, T, KeyOfT>::_InOrder(Node* root)
 {
     if(!root)   
@@ -211,31 +260,6 @@ typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::LeftMost()const
 
     return cur;
 }
-
-
-template <class K, class T, class KeyOfT>
-typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::Find(const T& data)
-{
-    Node* cur = _root;
-    while(cur)
-    {
-        if(cur->_kv.first < data.first)
-        {
-            cur = cur->_right;
-        }
-        else if(cur->_kv.first > data.first)
-        {
-            cur = cur->_left;
-        }
-        else 
-        {
-            return cur;
-        }
-    }
-
-    return nullptr;
-}
-
 
 template <class K, class T, class KeyOfT>
 typename RBTree<K, T, KeyOfT>::Node* RBTree<K, T, KeyOfT>::RightMost()const

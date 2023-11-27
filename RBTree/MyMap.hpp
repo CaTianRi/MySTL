@@ -9,7 +9,7 @@ namespace bit
     private:
         struct Mapkot 
         {
-            const K& operator()(const std::pair<K, T>& value)
+            const K& operator()(const std::pair<K, T>& value) const
             {
                 return value.first;
             }

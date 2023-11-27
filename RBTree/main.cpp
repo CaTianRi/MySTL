@@ -25,10 +25,10 @@ void test_RBT()
     t.InOrder();
 
     RBTree<int, int, bit::set<int>::SetKeyOfT>::iterator it = t.RightMost();
-    while(it != t.begin())
+    while(it != nullptr)
     {
-        --it;
         cout << *it << " ";
+		--it;
     }
     cout << endl;
 
@@ -66,6 +66,11 @@ void test_set()
 	{
 		cout << e << " ";
 	}
+
+	auto ret = s.find(10);
+	cout << *ret << endl;
+
+
 	cout << endl;
 	cout << "------------------------------------------------------------------------------" << endl;
 }
