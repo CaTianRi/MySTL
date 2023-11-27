@@ -34,9 +34,10 @@ struct HBIterator
     ,_pHt(it._pHt)
     {}
 
-	HBIterator(Node* pNode = nullptr, HashBucket* pHt = nullptr)
+	HBIterator(Node* pNode = nullptr, HashBucket* pHt = nullptr, size_t hashi = -1)
     :_node(pNode)
     ,_pHt(pHt)
+    ,_hashi(hashi)
     {}
 
     Self& operator++();
@@ -47,27 +48,74 @@ struct HBIterator
 	bool operator!=(const Self& it) const;
 	Node* _node;             // 当前迭代器关联的节点
 	HashBucket* _pHt;         // 哈希桶--主要是为了找下一个空桶时候方便
+    size_t _hashi;
 };
 
-template <class K, class V, class KeyOfValue, class HF>
+template <class K>
+struct HashFuc
+{
+    size_t operator()(const K& key)
+    {
+        return (size_t)key;
+    }
+};
+
+template <class K, class T, class KeyOfValue, class HF = HashFuc<K>>
 class HashBucket
 {
-    typedef HashBucketNode<K, V> Node;
+    typedef HashBucketNode<K, T> Node;
 
     template<class Key, class Value, class Ref, class Ptr, class KeyOfT, class Hash>  //clang error
 	friend struct HTIterator;
 
-    typedef HBIterator<K, V, V&, V*, KeyOfValue, HF> iterator;
-    typedef HBIterator<K, V, const V&, const V*, KeyOfValue, HF> const_iterator;
+    typedef HBIterator<K, T, T&, T*, KeyOfValue, HF> iterator;
+    typedef HBIterator<K, T, const T&, const T*, KeyOfValue, HF> const_iterator;
 
     //迭代器    //to do
     const_iterator begin() const;   
     iterator begin();
     iterator end();
     const_iterator end() const;
+
     
-    iterator find(const K& key);
-    std::pair<iterator, bool> insert(const std::pair<K, V> val);    //插入
+    iterator find(const K& key)
+    {
+        size_t hashi = HF(key) % _ht.size();
+        if(_ht[hashi] == nullptr)
+            return iterator(nullptr);
+        
+        Node* cur = _ht[hashi];
+        while(cur)
+        {
+            if(KeyOfValue(cur->_kv) == key)
+                return iterator(cur, this, hashi);
+
+            cur = cur->_next;
+        }
+
+        return cur;
+    }
+
+    std::pair<iterator, bool> insert(const T& val)    //插入
+    {
+        iterator it = find(KeyOfValue(kot(val)));
+        if (it != nullptr)
+        {
+            return std::make_pair(it, false);
+        }
+            
+        CheckCapacity();
+
+        size_t hashi = HF(KeyOfValue(val)) % _ht.size();
+        Node* node = new Node(val);
+
+        node->_next = _ht[hashi];
+        _ht[hashi] = node;
+        _size++;
+        
+        return std::make_pair(iterator(node, this, hashi), true);
+    }
+
     bool erase(const K& key);       //删除
 
     size_t size() { return _size; }
