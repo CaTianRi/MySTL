@@ -38,7 +38,6 @@ namespace bit
         {
             return _t.Find(key);
         }
-
     private:
         RBTree<K, K, SetKeyOfT> _t;
     };

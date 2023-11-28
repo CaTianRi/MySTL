@@ -48,6 +48,16 @@ namespace bit
             auto ret = _t.Insert(std::make_pair(key,T()));
             return ret.first->second;
         }
+        
+        iterator find(const K& key)
+        {
+            return _t.Find(key);
+        }
+
+        const_iterator find(const K& key) const
+        {
+            return _t.Find(key);
+        }
     private:
         RBTree<K, std::pair<const K, T>, Mapkot> _t;
     };

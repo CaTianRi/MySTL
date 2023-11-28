@@ -8,7 +8,7 @@ using namespace std;
 
 void test_RBT()
 {
-	cout << "------------------------------ RBTree_test() ------------------------------" << endl;
+	cout << "------------------------------- RBTree_test() --------------------------------" << endl;
 	vector<int> v {9,8,7,6,5,4,3,2,1,0};
 
 	size_t begin2 = clock();
@@ -25,7 +25,7 @@ void test_RBT()
     t.InOrder();
 
     RBTree<int, int, bit::set<int>::SetKeyOfT>::iterator it = t.RightMost();
-    while(it != nullptr)
+    while(it != t.end())
     {
         cout << *it << " ";
 		--it;
@@ -109,9 +109,11 @@ void test_Map()
 	}
 	cout << endl;
 
+    auto it1 = countMap.find("ƻ");
+    cout << it1->first << ":" << it1->second << endl;
+
 	cout << "------------------------------------------------------------------------------" << endl;
 }
-
 
 int main()
 {
