@@ -1,7 +1,7 @@
+#pragma once
 #include <utility>
 #include <iostream>
 #include <vector>
-#include <unistr.h>
 
 template <class T>
 struct HashBucketNode
@@ -16,7 +16,7 @@ struct HashBucketNode
 
 
 // 为了实现简单，在哈希桶的迭代器类中需要用到hashBucket本身，
-template<class K, class V, class KeyOfValue, class HF>
+template<class K, class T, class KeyOfValue, class HF>
 class HashBucket;
 
 // 注意：因为哈希桶在底层是单链表结构，所以哈希桶的迭代器不需要--操作
@@ -55,12 +55,14 @@ struct HBIterator
         _node = _node->_next;
         if(!_node)
         {
-            _hashi++;
             while(!_node && _hashi < _pHt->_ht.size())
             {
-                _node = _pHt->_ht[_hashi++];
+                _node = _pHt->_ht[++_hashi];
             }
         }
+        if(_hashi >= _pHt->_ht.size())
+            _node = nullptr;
+
         return *this;
     }
 
@@ -101,16 +103,63 @@ struct HashFuc
     }
 };
 
+template <>
+struct HashFuc<std::string>
+{
+    size_t operator()(const std::string& str)
+    {
+        size_t hashi = 0;
+        for(auto it : str)
+        {
+            hashi += (31 + it);
+        }
+
+        return hashi;
+    }
+};
+
 template <class K, class T, class KeyOfValue, class HF = HashFuc<K>>
 class HashBucket
 {
     template<class Key, class Value, class Ref, class Ptr, class KeyOfT, class Hash>  //clang error
-	friend struct HTIterator;
+	friend struct HBIterator;
 
 public:
     typedef HashBucketNode<T> Node;
     typedef HBIterator<K, T, T&, T*, KeyOfValue, HF> iterator;
     typedef HBIterator<K, T, const T&, const T*, KeyOfValue, HF> const_iterator;
+
+    template <class InputIterator>
+    HashBucket(InputIterator first, InputIterator last)
+        :_size(0)
+    {
+        while(first != last)
+        {
+            insert(*first);
+            ++first;
+            ++_size;
+        }
+    }
+    
+    HashBucket()
+    :_size(0)
+    {
+        _ht.resize(10);
+    }
+
+    ~HashBucket()
+    {
+        for(size_t i = 0; i < _ht.size(); ++i)
+        {
+            Node* node = _ht[i];
+            while (node)
+            {
+                Node* next = node->_next;
+                delete node;
+                node = next;
+            }
+        }
+    }
 
     //迭代器    //to do
     const_iterator begin() const
@@ -141,19 +190,17 @@ public:
 
     iterator end()
     {
-        return iterator(nullptr, this, 0);
+        return iterator(nullptr, this, -1);
     }
 
     const_iterator end() const
     {
-        return const_iterator(nullptr);
+        return const_iterator(nullptr, this, -1);
     }
 
     iterator find(const K& key)
     {
         size_t hashi = _hf(key) % _ht.size();
-        if(_ht[hashi] == nullptr)
-            return iterator(nullptr, this, hashi);
         
         Node* cur = _ht[hashi];
         while(cur)
@@ -164,7 +211,7 @@ public:
             cur = cur->_next;
         }
 
-        return cur;
+        return iterator(cur);
     }
 
     std::pair<iterator, bool> insert(const T& val)    //插入
@@ -189,34 +236,61 @@ public:
 
     bool erase(const K& key)       //删除
     {
+        size_t hashi = _hf(key) % _ht.size();
+        Node* cur = _ht[hashi];
+        Node* prev = nullptr;
+        while(cur) 
+        {
+            if(_kot(cur->_data) == key)
+            {
+                if(!prev)
+                {
+                    _ht[hashi] = cur->_next;
+                }
+                else 
+                {   
+                    prev->_next = cur->_next;
+                }
+                
+                --_size;
+                delete cur;
+                return true;
+            }
+            prev = cur;
+            cur = cur->_next;
+        }
         return false;
     }
 
     size_t size() { return _size; }
         
     bool empty() { return _size == 0; }
-
 private:
 	void CheckCapacity()
     {
-        if(_size * 10 / _ht.size() >= 1)
+        if(_size == _ht.size())
         {
-            HashBucket<K, T, KeyOfValue, HF> newHT;
-            newHT._ht.resize(_ht.size() * 2);           
+            std::vector<Node*> newHT;
+            newHT.resize(_ht.size() * 2, nullptr);
             for(size_t i = 0; i < _ht.size(); ++i)
             {
                 Node* node = _ht[i];
                 while(node)
                 {
-                    newHT.insert(node->_data);
-                    node = node->_next;
+                    Node* next = node->_next;
+                    size_t hashi = _hf(_kot(node->_data)) % newHT.size();
+                    node->_next = newHT[hashi];
+                    newHT[hashi] = node;
+
+                    node = next;
                 }
+                _ht[i] = nullptr;
             }
 
-            _ht.swap(newHT._ht);
+            _ht.swap(newHT);
         }
     }
-
+private:
     HF _hf;
     KeyOfValue _kot;
     std::vector<Node*> _ht;
