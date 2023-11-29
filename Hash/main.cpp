@@ -1,42 +1,24 @@
-#include "Close_Hash.hpp"
-#include <iostream>
+#include "unordered_set.hpp"
+#include <vector>
 
 using namespace std;
 
-void TestHT1()
+
+void test_set()
 {
-    Close_Hash::HashTable<int, int> ht;
-	int a[] = { 4,14,24,34,5,7,1 };
-	for (auto e : a)
-	{
-		ht.Insert(make_pair(e, e));
-	}
-
-	ht.Insert(make_pair(3, 3));
-	ht.Insert(make_pair(3, 3));
-	ht.Insert(make_pair(-3, -3));
-	ht.print();
-
-	ht.Erase(3);
-	ht.print();
-
-	if (ht.Find(3) != -1)
-	{
-		cout << "3存在" << endl;
-	}
-	else
-	{
-		cout << "3不存在" << endl;
-	}
-
-	ht.Insert(make_pair(3, 3));
-	ht.Insert(make_pair(23, 3));
-	ht.print();
+    bit::unordered_set<int> st;
+    vector<int> nums {1,2,3,4,5,6,7,8,9,0};
+    bit::unordered_set<int>::iterator it = st.begin();
+    st.insert(11);
+//    while(it != st.end())
+//    {
+//        cout << *it << " ";
+//        ++it;
+//    }
+//    cout << endl;
 }
-
 
 int main()
 {
-    TestHT1();
     return 0;
-}
+} 
